@@ -3,6 +3,8 @@ package org.obiba.magma.benchmark;
 import java.util.Collection;
 import java.util.List;
 
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormat;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
@@ -57,15 +59,21 @@ public abstract class AbstractDatasourceBenchmark {
   }
 
   private void generateData(Datasource datasource, Collection<Variable> variables) {
+    log.info("Generate Data for {}", datasource.getName());
+    long start = System.currentTimeMillis();
     ValueTable valueTable = new GeneratedValueTable(datasource, variables, nbEntities);
+    long end = System.currentTimeMillis();
+    log.info("Generated data ({} variables, {} entities) in {} for {}", nbVariables, nbEntities,
+        PeriodFormat.getDefault().print(new Period(start, end)), datasource.getName());
   }
 
   private Collection<Variable> createVariables() {
+    log.info("Create {} variables", nbVariables);
     Collection<Variable> variables = Lists.newArrayList();
     for(int i = 0; i < nbVariables; i++) {
       Variable variable = createVariable("Variable " + i, getValueType(i), Math.random() < 0.5);
       variables.add(variable);
-      log.info("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
+      log.trace("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
     }
     return variables;
   }
