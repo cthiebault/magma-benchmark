@@ -32,33 +32,24 @@ public class HibernateBenchmark {
     provider.setProperties(p);
     provider.initialise();
 
-    HibernateDatasource datasource = new HibernateDatasource("hibernate-mysql-" + nbEntities,
-        provider.getSessionFactory());
-
-    log.info("Generate Data for {}", datasource.getName());
-    long start = System.currentTimeMillis();
-    ValueTable generatedValueTable = new GeneratedValueTable(datasource, variables, nbEntities);
-    provider.getSessionFactory().getCurrentSession().beginTransaction();
-    MagmaEngine.get().addDatasource(datasource);
-    DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "NewTable", datasource);
-    provider.getSessionFactory().getCurrentSession().getTransaction().commit();
-    long end = System.currentTimeMillis();
-
-    Results.addStat("hibernate-mysql", variables.size(), nbEntities, start, end);
-    log.info("{} - Generated data ({} variables, {} entities) in {}", datasource.getName(), variables.size(),
-        nbEntities, PeriodFormat.getDefault().print(new Period(start, end)));
+    benchmarkHibernate(variables, nbEntities, provider, "hibernate-mysql");
   }
 
   public void benchmarkHsql(Collection<Variable> variables, int nbEntities) throws IOException {
     LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider("org.hsqldb.jdbcDriver",
-        "jdbc:hsqldb:mem:magma_benchmark;shutdown=true", "sa", "", "org.hibernate.dialect.HSQLDialect");
+        "jdbc:hsqldb:file:build/hibernate.db;shutdown=true", "sa", "", "org.hibernate.dialect.HSQLDialect");
     Properties p = new Properties();
     p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
     provider.setProperties(p);
     provider.initialise();
 
-    HibernateDatasource datasource = new HibernateDatasource("hibernate-hsql-" + nbEntities,
-        provider.getSessionFactory());
+    benchmarkHibernate(variables, nbEntities, provider, "hibernate-hsql");
+  }
+
+  private void benchmarkHibernate(Collection<Variable> variables, int nbEntities, LocalSessionFactoryProvider provider,
+      String name) throws IOException {
+
+    HibernateDatasource datasource = new HibernateDatasource(name + "-" + nbEntities, provider.getSessionFactory());
 
     log.info("Generate Data for {}", datasource.getName());
     long start = System.currentTimeMillis();
@@ -68,11 +59,10 @@ public class HibernateBenchmark {
     DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "NewTable", datasource);
     provider.getSessionFactory().getCurrentSession().getTransaction().commit();
     long end = System.currentTimeMillis();
-    Results.addStat("hibernate-hsql", variables.size(), nbEntities, start, end);
+    Results.addStat(name, variables.size(), nbEntities, start, end);
 
     log.info("{} - Generated data ({} variables, {} entities) in {}", datasource.getName(), variables.size(),
         nbEntities, PeriodFormat.getDefault().print(new Period(start, end)));
-
   }
 
 }

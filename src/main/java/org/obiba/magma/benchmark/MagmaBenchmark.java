@@ -28,7 +28,7 @@ public class MagmaBenchmark {
 
   private static final Logger log = LoggerFactory.getLogger(MagmaBenchmark.class);
 
-  private static final String PARTICIPANT = "Participant";
+  public static final String PARTICIPANT = "Participant";
 
   private static final List<ValueType> types = Lists.newArrayList();
 
@@ -48,6 +48,9 @@ public class MagmaBenchmark {
 
   @Resource
   private HibernateBenchmark hibernateBenchmark;
+
+  @Resource
+  private JdbcBenchmark jdbcBenchmark;
 
   public Collection<Variable> createVariables(int nbVariables) {
     log.info("Create {} variables", nbVariables);
@@ -74,19 +77,19 @@ public class MagmaBenchmark {
   public void run(int nbVariables) throws IOException {
     Collection<Variable> variables = createVariables(nbVariables);
 
-    hibernateBenchmark.benchmarkHsql(variables, 100);
-    hibernateBenchmark.benchmarkMySql(variables, 100);
-    neo4jBenchmark.benchmark(variables, 100);
-
-    hibernateBenchmark.benchmarkHsql(variables, 1000);
-    hibernateBenchmark.benchmarkMySql(variables, 1000);
-    neo4jBenchmark.benchmark(variables, 1000);
-
-    hibernateBenchmark.benchmarkHsql(variables, 10000);
-    hibernateBenchmark.benchmarkMySql(variables, 10000);
-    neo4jBenchmark.benchmark(variables, 10000);
+    run(variables, 100);
+    run(variables, 1000);
+    run(variables, 10000);
 
     Results.dump();
+  }
+
+  private void run(Collection<Variable> variables, int nbEntities) throws IOException {
+    hibernateBenchmark.benchmarkHsql(variables, nbEntities);
+    hibernateBenchmark.benchmarkMySql(variables, nbEntities);
+    jdbcBenchmark.benchmarkHsql(variables, nbEntities);
+    jdbcBenchmark.benchmarkMysql(variables, nbEntities);
+    neo4jBenchmark.benchmark(variables, nbEntities);
   }
 
   public static void main(String... args) throws IOException {
