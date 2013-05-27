@@ -5,7 +5,8 @@ Benchmak for Magma Datasources
 
 Supports:
 
-* Hibernate Datasource with MySQL
-* Hibernate Datasource with HSQLDB
+* Hibernate Datasource
+    * MySQL
+    * HSQLDB
 * Neo4j Datasource
 
