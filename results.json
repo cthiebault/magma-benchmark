@@ -1,0 +1,23 @@
+[
+    {
+        "datasource": "hibernate-hsql",
+        "nbVariables": 100,
+        "nbEntities": 100,
+        "executionTimeMillis": 2228,
+        "executionTime": "2 seconds and 228 milliseconds"
+    },
+    {
+        "datasource": "hibernate-mysql",
+        "nbVariables": 100,
+        "nbEntities": 100,
+        "executionTimeMillis": 3069,
+        "executionTime": "3 seconds and 69 milliseconds"
+    },
+    {
+        "datasource": "neo4j",
+        "nbVariables": 100,
+        "nbEntities": 100,
+        "executionTimeMillis": 19433,
+        "executionTime": "19 seconds and 433 milliseconds"
+    }
+]

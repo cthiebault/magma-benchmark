@@ -44,6 +44,7 @@ configurations {
 
 dependencies {
   compile('com.google.code.findbugs:jsr305:2.0.1')
+  compile('com.google.code.gson:gson:2.2.4')
   compile('com.google.guava:guava:14.0.1')
   compile('javassist:javassist:3.9.0.GA')
   compile('hsqldb:hsqldb:1.8.0.10')

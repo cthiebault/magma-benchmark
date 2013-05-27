@@ -3,21 +3,11 @@ package org.obiba.magma.benchmark;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.hibernate.cfg.Environment;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormat;
-import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.ValueTable;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
-import org.obiba.magma.datasource.generated.GeneratedValueTable;
-import org.obiba.magma.datasource.hibernate.HibernateDatasource;
-import org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider;
-import org.obiba.magma.support.DatasourceCopier;
 import org.obiba.magma.type.BooleanType;
 import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.DateType;
@@ -54,7 +44,10 @@ public class MagmaBenchmark {
   }
 
   @Resource
-  private Neo4jDatasourceBenchmark neo4jDatasourceBenchmark;
+  private Neo4jBenchmark neo4jBenchmark;
+
+  @Resource
+  private HibernateBenchmark hibernateBenchmark;
 
   public Collection<Variable> createVariables(int nbVariables) {
     log.info("Create {} variables", nbVariables);
@@ -62,7 +55,7 @@ public class MagmaBenchmark {
     for(int i = 0; i < nbVariables; i++) {
       Variable variable = createVariable("Variable " + i, getValueType(i), Math.random() < 0.5);
       variables.add(variable);
-      log.trace("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
+      log.debug("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
     }
     return variables;
   }
@@ -78,65 +71,27 @@ public class MagmaBenchmark {
     return builder.build();
   }
 
-  public void benchmarkNeo4j(Collection<Variable> variables, int nbEntities) throws IOException {
-    neo4jDatasourceBenchmark.generateData(variables, 100);
-  }
+  public void run(int nbVariables) throws IOException {
+    Collection<Variable> variables = createVariables(nbVariables);
 
-  public void benchmarkHibernateMySql(Collection<Variable> variables, int nbEntities) throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider("com.mysql.jdbc.Driver",
-        "jdbc:mysql://localhost:3306/magma_benchmark?characterEncoding=UTF-8", "root", "1234",
-        "org.hibernate.dialect.MySQL5InnoDBDialect");
-    Properties p = new Properties();
-    p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
-    provider.setProperties(p);
-    provider.initialise();
+    hibernateBenchmark.benchmarkHsql(variables, 100);
+    hibernateBenchmark.benchmarkMySql(variables, 100);
+    neo4jBenchmark.benchmark(variables, 100);
 
-    HibernateDatasource datasource = new HibernateDatasource("hibernate-mysql", provider.getSessionFactory());
+    hibernateBenchmark.benchmarkHsql(variables, 1000);
+    hibernateBenchmark.benchmarkMySql(variables, 1000);
+    neo4jBenchmark.benchmark(variables, 1000);
 
-    log.info("Generate Data for {}", datasource.getName());
-    long start = System.currentTimeMillis();
-    ValueTable generatedValueTable = new GeneratedValueTable(datasource, variables, nbEntities);
-    provider.getSessionFactory().getCurrentSession().beginTransaction();
-    MagmaEngine.get().addDatasource(datasource);
-    DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "NewTable", datasource);
-    provider.getSessionFactory().getCurrentSession().getTransaction().commit();
-    long end = System.currentTimeMillis();
-    log.info("{} - Generated data ({} variables, {} entities) in {}", datasource.getName(), variables.size(),
-        nbEntities, PeriodFormat.getDefault().print(new Period(start, end)));
-  }
+    hibernateBenchmark.benchmarkHsql(variables, 10000);
+    hibernateBenchmark.benchmarkMySql(variables, 10000);
+    neo4jBenchmark.benchmark(variables, 10000);
 
-  public void benchmarkHibernateHsql(Collection<Variable> variables, int nbEntities) throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider("org.hsqldb.jdbcDriver",
-        "jdbc:hsqldb:mem:magma_benchmark;shutdown=true", "sa", "", "org.hibernate.dialect.HSQLDialect");
-    Properties p = new Properties();
-    p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
-    provider.setProperties(p);
-    provider.initialise();
-
-    HibernateDatasource datasource = new HibernateDatasource("hibernate-hsql", provider.getSessionFactory());
-
-    log.info("Generate Data for {}", datasource.getName());
-    long start = System.currentTimeMillis();
-    ValueTable generatedValueTable = new GeneratedValueTable(datasource, variables, nbEntities);
-    provider.getSessionFactory().getCurrentSession().beginTransaction();
-    MagmaEngine.get().addDatasource(datasource);
-    DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "NewTable", datasource);
-    provider.getSessionFactory().getCurrentSession().getTransaction().commit();
-    long end = System.currentTimeMillis();
-    log.info("{} - Generated data ({} variables, {} entities) in {}", datasource.getName(), variables.size(),
-        nbEntities, PeriodFormat.getDefault().print(new Period(start, end)));
-
+    Results.dump();
   }
 
   public static void main(String... args) throws IOException {
-
     ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
     MagmaBenchmark benchmark = applicationContext.getBean(MagmaBenchmark.class);
-    Collection<Variable> variables = benchmark.createVariables(100);
-
-//    benchmark.benchmarkNeo4j(variables, 100);
-    benchmark.benchmarkHibernateMySql(variables, 100);
-    benchmark.benchmarkHibernateHsql(variables, 100);
-
+    benchmark.run(100);
   }
 }
