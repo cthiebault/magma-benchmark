@@ -1,7 +1,7 @@
 magma-benchmark
 ===============
 
-Benchmak for Magma Datasources
+Benchmark for [Magma](https://github.com/obiba/magma) Datasources
 
 Supports:
 
