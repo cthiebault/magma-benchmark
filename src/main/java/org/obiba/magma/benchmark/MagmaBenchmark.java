@@ -52,7 +52,7 @@ public class MagmaBenchmark {
   @Resource
   private JdbcBenchmark jdbcBenchmark;
 
-  public Collection<Variable> createVariables(int nbVariables) {
+  private Collection<Variable> createVariables(int nbVariables) {
     log.info("Create {} variables", nbVariables);
     Collection<Variable> variables = Lists.newArrayList();
     for(int i = 0; i < nbVariables; i++) {

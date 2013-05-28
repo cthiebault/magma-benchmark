@@ -138,8 +138,8 @@ publishing {
       from components.java
       pom.withXml {
         def Node root = asNode();
-        root.appendNode('name', 'magma-benchmarck')
-        root.appendNode('description', 'Benchmak for Magma Datasources')
+        root.appendNode('name', 'magma-benchmark')
+        root.appendNode('description', 'Benchmark for Magma Datasources')
         root.appendNode('url', 'http://www.obiba.org')
 
         def org = root.appendNode('organization')
