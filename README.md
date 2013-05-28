@@ -8,5 +8,8 @@ Supports:
 * Hibernate Datasource
     * MySQL
     * HSQLDB
+* JDBC Datasource
+    * MySQL
+    * HSQLDB
 * Neo4j Datasource
 
