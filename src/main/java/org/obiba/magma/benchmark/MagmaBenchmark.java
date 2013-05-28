@@ -76,11 +76,9 @@ public class MagmaBenchmark {
 
   public void run(int nbVariables) throws IOException {
     Collection<Variable> variables = createVariables(nbVariables);
-
     run(variables, 100);
     run(variables, 1000);
-    run(variables, 10000);
-
+//    run(variables, 10000);
     Results.dump();
   }
 

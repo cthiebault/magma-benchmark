@@ -12,10 +12,12 @@ import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.datasource.hibernate.HibernateDatasource;
+import org.obiba.magma.datasource.hibernate.SessionFactoryProvider;
 import org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider;
 import org.obiba.magma.support.DatasourceCopier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,10 +25,33 @@ public class HibernateBenchmark {
 
   private static final Logger log = LoggerFactory.getLogger(HibernateBenchmark.class);
 
+  @Value("#{mysql['driverClassName']}")
+  private String mysqlDriver;
+
+  @Value("#{mysql['url']}")
+  private String mysqlUrl;
+
+  @Value("#{mysql['username']}")
+  private String mysqlUsername;
+
+  @Value("#{mysql['password']}")
+  private String mysqlPassword;
+
+  @Value("#{hsql['driverClassName']}")
+  private String hsqlDriver;
+
+  @Value("#{hsql['url']}")
+  private String hsqlUrl;
+
+  @Value("#{hsql['username']}")
+  private String hsqlUsername;
+
+  @Value("#{hsql['password']}")
+  private String hsqlPassword;
+
   public void benchmarkMySql(Collection<Variable> variables, int nbEntities) throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider("com.mysql.jdbc.Driver",
-        "jdbc:mysql://localhost:3306/magma_benchmark?characterEncoding=UTF-8", "root", "1234",
-        "org.hibernate.dialect.MySQL5InnoDBDialect");
+    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider(mysqlDriver, mysqlUrl, mysqlUsername,
+        mysqlPassword, "org.hibernate.dialect.MySQL5InnoDBDialect");
     Properties p = new Properties();
     p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
     provider.setProperties(p);
@@ -36,8 +61,8 @@ public class HibernateBenchmark {
   }
 
   public void benchmarkHsql(Collection<Variable> variables, int nbEntities) throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider("org.hsqldb.jdbcDriver",
-        "jdbc:hsqldb:file:build/hibernate.db;shutdown=true", "sa", "", "org.hibernate.dialect.HSQLDialect");
+    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider(hsqlDriver, hsqlUrl, hsqlUsername,
+        hsqlPassword, "org.hibernate.dialect.HSQLDialect");
     Properties p = new Properties();
     p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
     provider.setProperties(p);
@@ -46,7 +71,7 @@ public class HibernateBenchmark {
     benchmarkHibernate(variables, nbEntities, provider, "hibernate-hsql");
   }
 
-  private void benchmarkHibernate(Collection<Variable> variables, int nbEntities, LocalSessionFactoryProvider provider,
+  private void benchmarkHibernate(Collection<Variable> variables, int nbEntities, SessionFactoryProvider provider,
       String name) throws IOException {
 
     HibernateDatasource datasource = new HibernateDatasource(name + "-" + nbEntities, provider.getSessionFactory());

@@ -1,6 +1,7 @@
 package org.obiba.magma.benchmark;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -28,32 +29,25 @@ public class JdbcBenchmark {
   private static final Logger log = LoggerFactory.getLogger(JdbcBenchmark.class);
 
   public void benchmarkMysql(Collection<Variable> variables, int nbEntities) throws IOException {
-    Properties prop = new Properties();
-    prop.setProperty(JdbcDatasourceFactory.DRIVER_CLASS_NAME, "com.mysql.jdbc.Driver");
-    prop.setProperty(JdbcDatasourceFactory.URL, "jdbc:mysql://localhost:3306/magma_benchmark?characterEncoding=UTF-8");
-    prop.setProperty(JdbcDatasourceFactory.USERNAME, "root");
-    prop.setProperty(JdbcDatasourceFactory.PASSWORD, "1234");
-
-    benchmark(variables, nbEntities, prop, "jdbc-mysql");
+    benchmark(variables, nbEntities, "/jdbc-mysql.properties", "jdbc-mysql");
   }
 
   public void benchmarkHsql(Collection<Variable> variables, int nbEntities) throws IOException {
-    Properties prop = new Properties();
-    prop.setProperty(JdbcDatasourceFactory.DRIVER_CLASS_NAME, "org.hsqldb.jdbcDriver");
-    prop.setProperty(JdbcDatasourceFactory.URL, "jdbc:hsqldb:file:build/jdbc.db;shutdown=true");
-    prop.setProperty(JdbcDatasourceFactory.USERNAME, "sa");
-    prop.setProperty(JdbcDatasourceFactory.PASSWORD, "");
-
-    benchmark(variables, nbEntities, prop, "jdbc-hsql");
+    benchmark(variables, nbEntities, "/jdbc-hsql.properties", "jdbc-hsql");
   }
 
-  private void benchmark(Collection<Variable> variables, int nbEntities, Properties jdbcProperties, String name)
+  private void benchmark(Collection<Variable> variables, int nbEntities, String jdbcPropertiesPath, String name)
       throws IOException {
+
+    Properties prop = new Properties();
+    InputStream in = getClass().getResourceAsStream(jdbcPropertiesPath);
+    prop.load(in);
+    in.close();
 
     JdbcDatasourceFactory factory = new JdbcDatasourceFactory();
     factory.setName(name + "-" + nbEntities);
-    factory.setJdbcProperties(jdbcProperties);
-    factory.setDatasourceSettings(new JdbcDatasourceSettings(PARTICIPANT, null, null, true));
+    factory.setJdbcProperties(prop);
+    factory.setDatasourceSettings(new JdbcDatasourceSettings(PARTICIPANT, null, null, false));
     Datasource datasource = factory.create();
 
     log.info("Generate Data for {}", datasource.getName());
