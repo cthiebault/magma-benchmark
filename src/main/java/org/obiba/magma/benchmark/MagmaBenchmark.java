@@ -44,9 +44,6 @@ public class MagmaBenchmark {
   }
 
   @Resource
-  private Neo4jBenchmark neo4jBenchmark;
-
-  @Resource
   private HibernateBenchmark hibernateBenchmark;
 
   @Resource
@@ -87,7 +84,6 @@ public class MagmaBenchmark {
     hibernateBenchmark.benchmarkMySql(variables, nbEntities);
     jdbcBenchmark.benchmarkHsql(variables, nbEntities);
     jdbcBenchmark.benchmarkMysql(variables, nbEntities);
-    neo4jBenchmark.benchmark(variables, nbEntities);
   }
 
   public static void main(String... args) throws IOException {

@@ -11,5 +11,4 @@ Supports:
 * JDBC Datasource
     * MySQL
     * HSQLDB
-* Neo4j Datasource
 

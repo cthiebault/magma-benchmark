@@ -5,7 +5,6 @@ apply plugin: 'maven-publish'
 apply plugin: 'artifactory-publish'
 apply plugin: 'idea'
 apply plugin: 'project-report'
-apply plugin: 'findbugs'
 
 ext {
   javaVersion = '1.6'
@@ -64,41 +63,12 @@ dependencies {
   compile("org.springframework:spring-orm:${springVersion}")
 
   testCompile('junit:junit:4.11')
-
-  pmd 'net.sourceforge.pmd:pmd:5.0.3'
 }
 
 test {
   testLogging.showStandardStreams = true
 }
 
-// Reporting
-reporting {
-  baseDir "$buildDir/reports"
-}
-
-// FindBugs
-findbugs {
-  reportsDir = file("${reporting.baseDir}/findbugs-output")
-  excludeFilter = file(rootProject.file('src/main/resources/findbugs-exclude.xml'))
-  ignoreFailures = true
-}
-
-// PMD
-task pmd << {
-  if (!file('src').exists()) return;
-  file("${reporting.baseDir}").mkdirs()
-  ant {
-    taskdef(name: 'pmd', classname: 'net.sourceforge.pmd.ant.PMDTask', classpath: configurations.pmd.asPath)
-    pmd(shortFilenames: 'true', failonruleviolation: 'false', rulesetfiles: rootProject.file('src/main/resources/pmd-ruleset.xml').toURI().toString()) {
-      formatter(type: 'html', toFile: "${reporting.baseDir}/pmd.html")
-      formatter(type: 'xml', toFile: "${reporting.baseDir}/pmd.xml")
-      fileset(dir: 'src') {
-        include(name: '**/*.java')
-      }
-    }
-  }
-}
 
 repositories {
   maven { url 'http://repo.obiba.org/repo' }
