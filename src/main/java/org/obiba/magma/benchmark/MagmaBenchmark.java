@@ -9,12 +9,9 @@ import javax.annotation.Resource;
 import org.obiba.magma.ValueType;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.BooleanType;
-import org.obiba.magma.type.DateTimeType;
-import org.obiba.magma.type.DateType;
 import org.obiba.magma.type.DecimalType;
 import org.obiba.magma.type.IntegerType;
 import org.obiba.magma.type.LocaleType;
-import org.obiba.magma.type.TextType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -33,14 +30,14 @@ public class MagmaBenchmark {
   private static final List<ValueType> types = Lists.newArrayList();
 
   static {
-    types.add(TextType.get());
+//    types.add(TextType.get());
     types.add(LocaleType.get());
     types.add(DecimalType.get());
     types.add(IntegerType.get());
     types.add(BooleanType.get());
 //    types.add(BinaryType.get());
-    types.add(DateTimeType.get());
-    types.add(DateType.get());
+//    types.add(DateTimeType.get());
+//    types.add(DateType.get());
   }
 
   @Resource
@@ -74,8 +71,9 @@ public class MagmaBenchmark {
   public void run(int nbVariables) throws IOException {
     Collection<Variable> variables = createVariables(nbVariables);
     run(variables, 100);
+    run(variables, 500);
     run(variables, 1000);
-//    run(variables, 10000);
+    run(variables, 10000);
     Results.dump();
   }
 

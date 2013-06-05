@@ -1,14 +1,18 @@
 magma-benchmark
 ===============
 
-Benchmark for [Magma](https://github.com/obiba/magma) Datasources
+Benchmark for [Magma Datasources](https://github.com/obiba/magma)
 
 Supports:
 
 * Hibernate Datasource
     * MySQL
-    * HSQLDB
+    * HsqlLDB
+    * MariaDB (TODO)
+    * PostgreSQL (TODO)
 * JDBC Datasource
     * MySQL
-    * HSQLDB
+    * HsqlLDB
+    * MariaDB (TODO)
+    * PostgreSQL (TODO)
 
