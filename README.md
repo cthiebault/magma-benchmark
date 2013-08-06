@@ -8,11 +8,12 @@ Supports:
 * Hibernate Datasource
     * MySQL
     * HsqlLDB
-    * MariaDB (TODO)
-    * PostgreSQL (TODO)
 * JDBC Datasource
     * MySQL
     * HsqlLDB
-    * MariaDB (TODO)
-    * PostgreSQL (TODO)
+* MongoDB Datasource
+
+To run
+
+    ./gradlew run
 
