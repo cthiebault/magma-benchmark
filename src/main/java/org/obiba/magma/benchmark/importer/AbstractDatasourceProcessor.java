@@ -1,37 +1,27 @@
-package org.obiba.magma.benchmark;
+package org.obiba.magma.benchmark.importer;
 
+import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.benchmark.BenchmarkItem;
+import org.obiba.magma.benchmark.BenchmarkResult;
+import org.obiba.magma.benchmark.VariableRepository;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
-import org.obiba.magma.datasource.mongodb.MongoDBDatasource;
 import org.obiba.magma.support.DatasourceCopier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import com.mongodb.MongoClientURI;
-
-@Component
-public class MongoDbProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
-
-  private static final Logger log = LoggerFactory.getLogger(MongoDbProcessor.class);
-
-  @Value("#{mongo['connectionURI']}")
-  private String connectionURI;
+public abstract class AbstractDatasourceProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
 
   @Autowired
   private VariableRepository variableRepository;
 
+  protected abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
+
   @Override
   public BenchmarkResult process(BenchmarkItem item) throws Exception {
 
-    log.debug("connectionURI: {}", connectionURI);
-
-    MongoDBDatasource datasource = new MongoDBDatasource("mongo-" + item.getNbEntities(),
-        new MongoClientURI(connectionURI));
+    Datasource datasource = createDatasource(item);
 
     long start = System.currentTimeMillis();
     ValueTable valueTable = new GeneratedValueTable(datasource, variableRepository.getVariables(),
@@ -46,5 +36,4 @@ public class MongoDbProcessor implements ItemProcessor<BenchmarkItem, BenchmarkR
 
     return result;
   }
-
 }

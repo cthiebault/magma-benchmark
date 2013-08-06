@@ -1,5 +1,8 @@
 package org.obiba.magma.benchmark;
 
+import org.obiba.magma.benchmark.importer.HibernateProcessor;
+import org.obiba.magma.benchmark.importer.JdbcProcessor;
+import org.obiba.magma.benchmark.importer.MongoDbProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.annotation.AfterProcess;

@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark;
+package org.obiba.magma.benchmark.importer;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -7,6 +7,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
+import org.obiba.magma.benchmark.BenchmarkItem;
+import org.obiba.magma.benchmark.BenchmarkResult;
+import org.obiba.magma.benchmark.VariableRepository;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.datasource.hibernate.HibernateDatasource;
 import org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider;
