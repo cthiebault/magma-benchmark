@@ -37,6 +37,13 @@ configurations {
   compile
   runtime
   all*.exclude group: 'commons-logging'
+  all {
+    // don't cache changing modules and dynamic versions at all
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:dependency_management_overview
+    // http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.ResolutionStrategy.html
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+  }
 }
 
 dependencies {
