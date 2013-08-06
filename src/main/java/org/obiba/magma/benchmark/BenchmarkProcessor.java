@@ -17,15 +17,22 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   @Autowired
   private HibernateProcessor hibernateProcessor;
 
+  @Autowired
+  private MongoDbProcessor mongoDbProcessor;
+
   @Override
   public BenchmarkResult process(BenchmarkItem item) throws Exception {
-    if("jdbc".equalsIgnoreCase(item.getDatasource())) {
+    String datasource = item.getDatasource();
+    if("jdbc".equalsIgnoreCase(datasource)) {
       return jdbcProcessor.process(item);
     }
-    if("hibernate".equalsIgnoreCase(item.getDatasource())) {
+    if("hibernate".equalsIgnoreCase(datasource)) {
       return hibernateProcessor.process(item);
     }
-    return null;
+    if("mongo".equalsIgnoreCase(datasource)) {
+      return mongoDbProcessor.process(item);
+    }
+    throw new IllegalArgumentException("Datasource " + datasource + " is not supported");
   }
 
   @BeforeProcess

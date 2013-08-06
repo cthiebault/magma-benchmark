@@ -7,7 +7,7 @@ apply plugin: 'idea'
 apply plugin: 'project-report'
 
 ext {
-  magmaVersion = '1.7-SNAPSHOT'
+  magmaVersion = '1.8-SNAPSHOT'
   slf4jVersion = '1.7.4'
 }
 
@@ -52,6 +52,7 @@ dependencies {
   compile("org.obiba.magma:magma-data-generator:${magmaVersion}")
   compile("org.obiba.magma:magma-hibernate-datasource:${magmaVersion}")
   compile("org.obiba.magma:magma-datasource-jdbc:${magmaVersion}")
+  compile("org.obiba.magma:magma-datasource-mongodb:${magmaVersion}")
 
   compile("org.slf4j:slf4j-api:${slf4jVersion}")
   compile("org.slf4j:slf4j-log4j12:${slf4jVersion}")
