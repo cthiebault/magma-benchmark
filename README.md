@@ -7,10 +7,10 @@ Supports:
 
 * Hibernate Datasource
     * MySQL
-    * HsqlLDB
+    * HsqlDB
 * JDBC Datasource
     * MySQL
-    * HsqlLDB
+    * HsqlDB
 * MongoDB Datasource
 
 To run
