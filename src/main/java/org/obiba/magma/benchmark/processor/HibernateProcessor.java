@@ -77,7 +77,10 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     result.withImportDuration(importEnd - importStart).withNbVariables(nbVariables).withDatasource(item.getDatasource())
         .withFlavor(item.getFlavor()).withNbEntities(nbEntities);
 
-    // TODO vector
+    long readStart = System.currentTimeMillis();
+    AbstractDatasourceProcessor.readVector(datasource);
+    long readEnd = System.currentTimeMillis();
+    result.withVectorReadDuration(readEnd - readStart);
 
     deleteDatasource(datasource.getName(), sessionFactory, result);
 
@@ -86,13 +89,18 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
 
   public void deleteDatasource(String name, SessionFactory sessionFactory, BenchmarkResult result)
       throws NoSuchDatasourceException {
-    long deleteStart = System.currentTimeMillis();
+    long start = System.currentTimeMillis();
     sessionFactory.getCurrentSession().beginTransaction();
     Datasource datasource = MagmaEngine.get().getDatasource(name);
     MagmaEngine.get().removeDatasource(datasource);
+    datasource.drop();
+
+    // delete all entities
+    sessionFactory.getCurrentSession().createQuery("delete from VariableEntityState").executeUpdate();
+
     sessionFactory.getCurrentSession().getTransaction().commit();
-    long deleteEnd = System.currentTimeMillis();
-    result.withDeleteDuration(deleteEnd - deleteStart);
+    long end = System.currentTimeMillis();
+    result.withDeleteDuration(end - start);
   }
 
   private SessionFactory getSessionFactory(String flavor) throws IOException {

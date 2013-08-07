@@ -21,7 +21,7 @@ import com.google.common.primitives.Ints;
 @Component("variableRepository")
 public class VariableRepository implements Tasklet {
 
-  private static final Logger log = LoggerFactory.getLogger(MagmaBenchmark.class);
+  private static final Logger log = LoggerFactory.getLogger(VariableRepository.class);
 
   public static final String PARTICIPANT = "Participant";
 
@@ -64,7 +64,7 @@ public class VariableRepository implements Tasklet {
     for(int i = 0; i < nbVariables; i++) {
       Variable variable = createVariable("Variable " + i, getValueType(i), Math.random() < 0.5);
       variables.add(variable);
-      log.debug("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
+      log.trace("{}: {}, repeatable: {}", variable.getName(), variable.getValueType(), variable.isRepeatable());
     }
   }
 

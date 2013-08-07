@@ -10,10 +10,10 @@ jdbc,mysql,100
 hibernate,mysql,100
 #hibernate,mysql,1000
 #hibernate,mysql,10000
-#hibernate,mysql,100000
+hibernate,mysql,100000
 #hibernate,hsql,100
 #hibernate,hsql,1000
 #hibernate,hsql,10000
 #hibernate,hsql,100000
-mongo,,100
-mongo,,10000
+#mongo,,100
+#mongo,,10000
