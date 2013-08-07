@@ -1,8 +1,8 @@
 package org.obiba.magma.benchmark;
 
-import org.obiba.magma.benchmark.importer.HibernateProcessor;
-import org.obiba.magma.benchmark.importer.JdbcProcessor;
-import org.obiba.magma.benchmark.importer.MongoDbProcessor;
+import org.obiba.magma.benchmark.processor.HibernateProcessor;
+import org.obiba.magma.benchmark.processor.JdbcProcessor;
+import org.obiba.magma.benchmark.processor.MongoDbProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.annotation.AfterProcess;
@@ -46,7 +46,7 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   @AfterProcess
   public void afterProcess(BenchmarkItem item, BenchmarkResult result) {
     log.info("{} - Generated data ({} variables, {} entities) in {}", result.getDatasource(), result.getNbVariables(),
-        result.getNbEntities(), result.getDuration());
+        result.getNbEntities(), result.formatImportDuration());
   }
 
 }

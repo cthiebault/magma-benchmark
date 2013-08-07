@@ -9,7 +9,7 @@ public class ResultsHeaderCallback implements FlatFileHeaderCallback {
 
   @Override
   public void writeHeader(Writer writer) throws IOException {
-    writer.write("datasource, flavor, nbEntities, nbVariables, start, end, duration");
+    writer.write(BenchmarkResult.FIELDS_HEADER);
   }
 
 }

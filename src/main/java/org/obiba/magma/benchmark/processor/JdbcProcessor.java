@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark.importer;
+package org.obiba.magma.benchmark.processor;
 
 import java.io.InputStream;
 import java.util.Properties;

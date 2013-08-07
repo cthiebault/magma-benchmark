@@ -1,11 +1,13 @@
-package org.obiba.magma.benchmark.importer;
+package org.obiba.magma.benchmark.processor;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
+import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
+import org.obiba.magma.NoSuchDatasourceException;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.benchmark.BenchmarkItem;
 import org.obiba.magma.benchmark.BenchmarkResult;
@@ -14,6 +16,8 @@ import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.datasource.hibernate.HibernateDatasource;
 import org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider;
 import org.obiba.magma.support.DatasourceCopier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HibernateProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
+
+  private static final Logger log = LoggerFactory.getLogger(HibernateProcessor.class);
 
   @Value("#{mysql['driverClassName']}")
   private String mysqlDriver;
@@ -58,20 +64,35 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     HibernateDatasource datasource = new HibernateDatasource(
         item.getDatasource() + "-" + item.getFlavor() + "-" + nbEntities, sessionFactory);
 
-    long start = System.currentTimeMillis();
+    long importStart = System.currentTimeMillis();
     ValueTable generatedValueTable = new GeneratedValueTable(datasource, variableRepository.getVariables(), nbEntities);
     sessionFactory.getCurrentSession().beginTransaction();
     MagmaEngine.get().addDatasource(datasource);
-    DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "NewTable", datasource);
+    DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "Table1", datasource);
     sessionFactory.getCurrentSession().getTransaction().commit();
-    long end = System.currentTimeMillis();
+    long importEnd = System.currentTimeMillis();
 
     BenchmarkResult result = new BenchmarkResult();
     int nbVariables = variableRepository.getNbVariables();
-    result.withStart(start).withEnd(end).withNbVariables(nbVariables).withDatasource(item.getDatasource())
+    result.withImportDuration(importEnd - importStart).withNbVariables(nbVariables).withDatasource(item.getDatasource())
         .withFlavor(item.getFlavor()).withNbEntities(nbEntities);
 
+    // TODO vector
+
+    deleteDatasource(datasource.getName(), sessionFactory, result);
+
     return result;
+  }
+
+  public void deleteDatasource(String name, SessionFactory sessionFactory, BenchmarkResult result)
+      throws NoSuchDatasourceException {
+    long deleteStart = System.currentTimeMillis();
+    sessionFactory.getCurrentSession().beginTransaction();
+    Datasource datasource = MagmaEngine.get().getDatasource(name);
+    MagmaEngine.get().removeDatasource(datasource);
+    sessionFactory.getCurrentSession().getTransaction().commit();
+    long deleteEnd = System.currentTimeMillis();
+    result.withDeleteDuration(deleteEnd - deleteStart);
   }
 
   private SessionFactory getSessionFactory(String flavor) throws IOException {
