@@ -69,7 +69,9 @@ dependencies {
   compile("org.slf4j:jcl-over-slf4j:${slf4jVersion}")
 
   compile('org.springframework:spring-orm:3.2.3.RELEASE')
-  compile('org.springframework.batch:spring-batch-core:2.2.1.RELEASE')
+  compile('org.springframework.batch:spring-batch-core:2.2.1.RELEASE') {
+    exclude group: 'com.thoughtworks.xstream'
+  }
 
   testCompile('junit:junit:4.11')
 }
