@@ -52,6 +52,30 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   @Value("#{hsql['password']}")
   private String hsqlPassword;
 
+  @Value("#{postgresql['driverClassName']}")
+  private String postgresqlDriver;
+
+  @Value("#{postgresql['url']}")
+  private String postgresqlUrl;
+
+  @Value("#{postgresql['username']}")
+  private String postgresqlUsername;
+
+  @Value("#{postgresql['password']}")
+  private String postgresqlPassword;
+
+  @Value("#{mariadb['driverClassName']}")
+  private String mariadbDriver;
+
+  @Value("#{mariadb['url']}")
+  private String mariadbUrl;
+
+  @Value("#{mariadb['username']}")
+  private String mariadbUsername;
+
+  @Value("#{mariadb['password']}")
+  private String mariadbPassword;
+
   @Autowired
   private VariableRepository variableRepository;
 
@@ -61,9 +85,26 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     SessionFactory sessionFactory = getSessionFactory(item.getFlavor());
 
     int nbEntities = item.getNbEntities();
-    HibernateDatasource datasource = new HibernateDatasource(
-        item.getDatasource() + "-" + item.getFlavor() + "-" + nbEntities, sessionFactory);
+    Datasource datasource = new HibernateDatasource(item.getDatasource() + "-" + item.getFlavor() + "-" + nbEntities,
+        sessionFactory);
 
+    BenchmarkResult result = new BenchmarkResult();
+    result.withNbVariables(variableRepository.getNbVariables()) //
+        .withDatasource(item.getDatasource()) //
+        .withFlavor(item.getFlavor()) //
+        .withNbEntities(nbEntities);
+
+    importData(nbEntities, datasource, sessionFactory, result);
+
+    readVector(datasource, result);
+
+    deleteDatasource(datasource.getName(), sessionFactory, result);
+
+    return result;
+  }
+
+  private void importData(int nbEntities, Datasource datasource, SessionFactory sessionFactory, BenchmarkResult result)
+      throws IOException {
     long importStart = System.currentTimeMillis();
     ValueTable generatedValueTable = new GeneratedValueTable(datasource, variableRepository.getVariables(), nbEntities);
     sessionFactory.getCurrentSession().beginTransaction();
@@ -71,20 +112,14 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     DatasourceCopier.Builder.newCopier().build().copy(generatedValueTable, "Table1", datasource);
     sessionFactory.getCurrentSession().getTransaction().commit();
     long importEnd = System.currentTimeMillis();
+    result.withImportDuration(importEnd - importStart);
+  }
 
-    BenchmarkResult result = new BenchmarkResult();
-    int nbVariables = variableRepository.getNbVariables();
-    result.withImportDuration(importEnd - importStart).withNbVariables(nbVariables).withDatasource(item.getDatasource())
-        .withFlavor(item.getFlavor()).withNbEntities(nbEntities);
-
+  private void readVector(Datasource datasource, BenchmarkResult result) {
     long readStart = System.currentTimeMillis();
     AbstractDatasourceProcessor.readVector(datasource);
     long readEnd = System.currentTimeMillis();
     result.withVectorReadDuration(readEnd - readStart);
-
-    deleteDatasource(datasource.getName(), sessionFactory, result);
-
-    return result;
   }
 
   public void deleteDatasource(String name, SessionFactory sessionFactory, BenchmarkResult result)
@@ -103,21 +138,22 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     result.withDeleteDuration(end - start);
   }
 
+  @SuppressWarnings("IfStatementWithTooManyBranches")
   private SessionFactory getSessionFactory(String flavor) throws IOException {
-    SessionFactory sessionFactory = null;
+    LocalSessionFactoryProvider provider = null;
     if("mysql".equalsIgnoreCase(flavor)) {
-      sessionFactory = createMySqlSessionFactory();
+      provider = createMySqlSessionFactoryProvider();
     } else if("hsql".equalsIgnoreCase(flavor)) {
-      sessionFactory = createHsqlSessionFactory();
+      provider = createHsqlSessionFactoryProvider();
+    } else if("postgresql".equalsIgnoreCase(flavor)) {
+      provider = createPostgreSqlSessionFactoryProvider();
+    } else if("mariadb".equalsIgnoreCase(flavor)) {
+      provider = createMariaDbSessionFactoryProvider();
     } else {
-      throw new IllegalArgumentException("Unknown hibernate dialect " + flavor + ". Supports [mysql, hsql]");
+      throw new IllegalArgumentException(
+          "Unknown hibernate dialect " + flavor + ". Supports [mysql, hsql, postgresql, mariadb]");
     }
-    return sessionFactory;
-  }
 
-  private SessionFactory createMySqlSessionFactory() throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider(mysqlDriver, mysqlUrl, mysqlUsername,
-        mysqlPassword, "org.hibernate.dialect.MySQL5InnoDBDialect");
     Properties p = new Properties();
     p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
     provider.setProperties(p);
@@ -125,14 +161,24 @@ public class HibernateProcessor implements ItemProcessor<BenchmarkItem, Benchmar
     return provider.getSessionFactory();
   }
 
-  private SessionFactory createHsqlSessionFactory() throws IOException {
-    LocalSessionFactoryProvider provider = new LocalSessionFactoryProvider(hsqlDriver, hsqlUrl, hsqlUsername,
-        hsqlPassword, "org.hibernate.dialect.HSQLDialect");
-    Properties p = new Properties();
-    p.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.HashtableCacheProvider");
-    provider.setProperties(p);
-    provider.initialise();
-    return provider.getSessionFactory();
+  private LocalSessionFactoryProvider createMySqlSessionFactoryProvider() throws IOException {
+    return new LocalSessionFactoryProvider(mysqlDriver, mysqlUrl, mysqlUsername, mysqlPassword,
+        "org.hibernate.dialect.MySQL5InnoDBDialect");
+  }
+
+  private LocalSessionFactoryProvider createHsqlSessionFactoryProvider() throws IOException {
+    return new LocalSessionFactoryProvider(hsqlDriver, hsqlUrl, hsqlUsername, hsqlPassword,
+        "org.hibernate.dialect.HSQLDialect");
+  }
+
+  private LocalSessionFactoryProvider createPostgreSqlSessionFactoryProvider() throws IOException {
+    return new LocalSessionFactoryProvider(postgresqlDriver, postgresqlUrl, postgresqlUsername, postgresqlPassword,
+        "org.hibernate.dialect.PostgreSQLDialect");
+  }
+
+  private LocalSessionFactoryProvider createMariaDbSessionFactoryProvider() throws IOException {
+    return new LocalSessionFactoryProvider(mariadbDriver, mariadbUrl, mariadbUsername, mariadbPassword,
+        "org.hibernate.dialect.MySQL5InnoDBDialect");
   }
 
 }

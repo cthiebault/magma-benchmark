@@ -11,6 +11,8 @@
 
   <util:properties id="mysql" location="jdbc-mysql.properties"/>
   <util:properties id="hsql" location="jdbc-hsql.properties"/>
+  <util:properties id="postgresql" location="jdbc-postgresql.properties"/>
+  <util:properties id="mariadb" location="jdbc-mariadb.properties"/>
   <util:properties id="mongo" location="mongodb.properties"/>
 
   <bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager">
