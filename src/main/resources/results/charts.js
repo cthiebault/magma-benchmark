@@ -16,7 +16,6 @@ $(function () {
       categories: ['100', '1000']
     },
     yAxis: {
-      min: 0,
       title: {
         text: 'Time (ms)'
       }
