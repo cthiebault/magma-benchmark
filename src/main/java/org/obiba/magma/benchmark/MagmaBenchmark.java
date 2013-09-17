@@ -1,7 +1,5 @@
 package org.obiba.magma.benchmark;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -13,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MagmaBenchmark {
-
-  private static final Logger log = LoggerFactory.getLogger(MagmaBenchmark.class);
 
   @Autowired
   private JobLauncher jobLauncher;

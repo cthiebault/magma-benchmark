@@ -41,8 +41,11 @@ public abstract class AbstractDatasourceProcessor implements ItemProcessor<Bench
     long importEnd = System.currentTimeMillis();
 
     BenchmarkResult result = new BenchmarkResult();
-    result.withImportDuration(importEnd - importStart).withNbVariables(variableRepository.getNbVariables())
-        .withDatasource(item.getDatasource()).withFlavor(item.getFlavor()).withNbEntities(item.getNbEntities());
+    result.withImportDuration(importEnd - importStart) //
+        .withNbVariables(variableRepository.getNbVariables()) //
+        .withDatasource(item.getDatasource()) //
+        .withFlavor(item.getFlavor()) //
+        .withNbEntities(item.getNbEntities());
 
     long readStart = System.currentTimeMillis();
     readVector(datasource);

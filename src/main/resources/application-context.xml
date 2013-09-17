@@ -65,10 +65,9 @@
 
   <bean id="resultsWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
     <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:build/results.csv"/>
+    <property name="resource" value="file:results.csv"/>
     <property name="lineAggregator">
-      <bean
-          class="org.springframework.batch.item.file.transform.PassThroughLineAggregator"/>
+      <bean class="org.springframework.batch.item.file.transform.PassThroughLineAggregator"/>
     </property>
     <property name="headerCallback">
       <bean class="org.obiba.magma.benchmark.ResultsHeaderCallback"/>

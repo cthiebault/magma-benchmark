@@ -8,12 +8,11 @@ Supports:
 * Hibernate Datasource
     * MySQL
     * HsqlDB
+    * MariaDB (TODO)
 * JDBC Datasource
     * MySQL
     * HsqlDB
 * MongoDB Datasource
+* OrientDB Datasource (TODO)
 
-To run
-
-    ./gradlew run
-
+To run `./gradlew run` and results in `results.csv`

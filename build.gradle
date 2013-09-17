@@ -6,10 +6,11 @@ apply plugin: 'artifactory-publish'
 apply plugin: 'idea'
 apply plugin: 'project-report'
 apply plugin: 'application'
+apply plugin: 'versions'
 
 ext {
   magmaVersion = '1.8-SNAPSHOT'
-  slf4jVersion = '1.7.4'
+  slf4jVersion = '1.7.5'
 }
 
 group = 'org.obiba.magma'
@@ -22,7 +23,8 @@ buildscript {
     maven { url 'http://repo.obiba.org/obiba-gradle-plugins-release' }
   }
   dependencies {
-    classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.1.0')
+    classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.1.0'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.4'
   }
 }
 
@@ -39,22 +41,15 @@ configurations {
   compile
   runtime
   all*.exclude group: 'commons-logging'
-//  all {
-//    // don't cache changing modules and dynamic versions at all
-//    // http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:dependency_management_overview
-//    // http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.ResolutionStrategy.html
-//    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//  }
 }
 
 dependencies {
   compile('com.google.code.findbugs:jsr305:2.0.1')
   compile('com.google.code.gson:gson:2.2.4')
-  compile('com.google.guava:guava:14.0.1')
-  compile('javassist:javassist:3.9.0.GA')
-  compile('hsqldb:hsqldb:1.8.0.10')
-  compile('mysql:mysql-connector-java:5.1.24')
+  compile('com.google.guava:guava:15.0')
+  compile('javassist:javassist:3.12.1.GA')
+  compile('org.hsqldb:hsqldb:2.3.0')
+  compile('mysql:mysql-connector-java:5.1.26')
   compile('net.sourceforge.findbugs:annotations:1.3.2')
 
   // http://java.dzone.com/articles/deploying-artifact-local-cache
@@ -68,8 +63,8 @@ dependencies {
   compile("org.slf4j:slf4j-log4j12:${slf4jVersion}")
   compile("org.slf4j:jcl-over-slf4j:${slf4jVersion}")
 
-  compile('org.springframework:spring-orm:3.2.3.RELEASE')
-  compile('org.springframework.batch:spring-batch-core:2.2.1.RELEASE') {
+  compile('org.springframework:spring-orm:3.2.4.RELEASE')
+  compile('org.springframework.batch:spring-batch-core:2.2.2.RELEASE') {
     exclude group: 'com.thoughtworks.xstream'
   }
 
