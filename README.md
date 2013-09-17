@@ -15,4 +15,4 @@ Supports:
 * MongoDB Datasource
 * OrientDB Datasource (TODO)
 
-To run `./gradlew run` and results in `results.csv`
+To run `./gradlew run` and results in `results/index.htm`

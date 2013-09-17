@@ -62,7 +62,7 @@
 
   <bean id="csvWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
     <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:results.csv"/>
+    <property name="resource" value="file:results/benchmark-results.csv"/>
     <property name="lineAggregator">
       <bean class="org.obiba.magma.benchmark.writer.CsvLineAggregator"/>
     </property>
@@ -75,7 +75,7 @@
 
   <bean id="jsonWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
     <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:out/production/magma-benchmark/results/results.js"/>
+    <property name="resource" value="file:results/benchmark-results.js"/>
     <property name="lineAggregator">
       <bean class="org.obiba.magma.benchmark.writer.JsonLineAggregator"/>
     </property>
