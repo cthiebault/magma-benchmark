@@ -7,6 +7,7 @@ import org.joda.time.format.PeriodFormat;
 import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
+import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("ParameterHidesMemberVariable")
 public class BenchmarkResult extends BenchmarkItem {
@@ -30,9 +31,15 @@ public class BenchmarkResult extends BenchmarkItem {
 
   private long importDuration;
 
+  private String importDurationFormatted;
+
   private long vectorReadDuration;
 
+  private String vectorReadDurationFormatted;
+
   private long deleteDuration;
+
+  private String deleteDurationFormatted;
 
   private int nbVariables;
 
@@ -50,6 +57,7 @@ public class BenchmarkResult extends BenchmarkItem {
 
   public void setImportDuration(long importDuration) {
     this.importDuration = importDuration;
+    setImportDurationFormatted(PeriodFormat.getDefault().print(new Period(importDuration)));
   }
 
   public long getVectorReadDuration() {
@@ -58,6 +66,7 @@ public class BenchmarkResult extends BenchmarkItem {
 
   public void setVectorReadDuration(long vectorReadDuration) {
     this.vectorReadDuration = vectorReadDuration;
+    setVectorReadDurationFormatted(PeriodFormat.getDefault().print(new Period(vectorReadDuration)));
   }
 
   public long getDeleteDuration() {
@@ -66,54 +75,75 @@ public class BenchmarkResult extends BenchmarkItem {
 
   public void setDeleteDuration(long deleteDuration) {
     this.deleteDuration = deleteDuration;
+    setDeleteDurationFormatted(PeriodFormat.getDefault().print(new Period(deleteDuration)));
+  }
+
+  public String getImportDurationFormatted() {
+    return importDurationFormatted;
+  }
+
+  public void setImportDurationFormatted(String importDurationFormatted) {
+    this.importDurationFormatted = importDurationFormatted;
+  }
+
+  public String getDeleteDurationFormatted() {
+    return deleteDurationFormatted;
+  }
+
+  public void setDeleteDurationFormatted(String deleteDurationFormatted) {
+    this.deleteDurationFormatted = deleteDurationFormatted;
+  }
+
+  public String getVectorReadDurationFormatted() {
+    return vectorReadDurationFormatted;
+  }
+
+  public void setVectorReadDurationFormatted(String vectorReadDurationFormatted) {
+    this.vectorReadDurationFormatted = vectorReadDurationFormatted;
   }
 
   public BenchmarkResult withNbVariables(int nbVariables) {
-    this.nbVariables = nbVariables;
+    setNbVariables(nbVariables);
     return this;
   }
 
   public BenchmarkResult withImportDuration(long importDuration) {
-    this.importDuration = importDuration;
+    setImportDuration(importDuration);
     return this;
   }
 
   public BenchmarkResult withVectorReadDuration(long vectorReadDuration) {
-    this.vectorReadDuration = vectorReadDuration;
+    setVectorReadDuration(vectorReadDuration);
     return this;
   }
 
   public BenchmarkResult withDeleteDuration(long deleteDuration) {
-    this.deleteDuration = deleteDuration;
+    setDeleteDuration(deleteDuration);
     return this;
   }
 
-  public String formatImportDuration() {
-    return PeriodFormat.getDefault().print(new Period(importDuration));
+  public String toJson() {
+    return new GsonBuilder().create().toJson(this);
   }
 
-  public String formatVectorReadDuration() {
-    return PeriodFormat.getDefault().print(new Period(vectorReadDuration));
-  }
-
-  public String formatDeleteDuration() {
-    return PeriodFormat.getDefault().print(new Period(deleteDuration));
-  }
-
-  @Override
-  public String toString() {
+  public String toCsv() {
     List<Object> values = Lists.newArrayList();
     values.add(getDatasource());
     values.add(getFlavor());
     values.add(getNbEntities());
     values.add(getNbVariables());
     values.add(getImportDuration());
-    values.add(formatImportDuration());
-    values.add(formatVectorReadDuration());
+    values.add(getImportDurationFormatted());
     values.add(getVectorReadDuration());
+    values.add(getVectorReadDurationFormatted());
     values.add(getDeleteDuration());
-    values.add(formatDeleteDuration());
+    values.add(getDeleteDurationFormatted());
     return StringUtils.collectionToCommaDelimitedString(values);
+  }
+
+  @Override
+  public String toString() {
+    return toCsv();
   }
 
 }

@@ -13,12 +13,10 @@
   <util:properties id="hsql" location="jdbc-hsql.properties"/>
   <util:properties id="mongo" location="mongodb.properties"/>
 
-  <bean id="transactionManager"
-      class="org.springframework.batch.support.transaction.ResourcelessTransactionManager">
+  <bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager">
   </bean>
 
-  <bean id="jobRepository"
-      class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+  <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
     <property name="transactionManager" ref="transactionManager"/>
   </bean>
 
@@ -40,8 +38,7 @@
     </step>
   </job>
 
-  <bean name="benchmarkItemReader"
-      class="org.springframework.batch.item.file.FlatFileItemReader">
+  <bean name="benchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
     <property name="resource" value="classpath:jobs.csv"/>
     <property name="comments" value="#"/>
     <property name="lineMapper">
@@ -63,14 +60,36 @@
     <property name="linesToSkip" value="1"/>
   </bean>
 
-  <bean id="resultsWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+  <bean id="csvWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
     <!--suppress SpringModelInspection -->
     <property name="resource" value="file:results.csv"/>
     <property name="lineAggregator">
-      <bean class="org.springframework.batch.item.file.transform.PassThroughLineAggregator"/>
+      <bean class="org.obiba.magma.benchmark.writer.CsvLineAggregator"/>
     </property>
     <property name="headerCallback">
-      <bean class="org.obiba.magma.benchmark.ResultsHeaderCallback"/>
+      <bean class="org.obiba.magma.benchmark.writer.CsvHeaderCallback"/>
+    </property>
+  </bean>
+
+  <bean id="jsonHeaderFooterCallback" class="org.obiba.magma.benchmark.writer.JsonHeaderFooterCallback"/>
+
+  <bean id="jsonWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+    <!--suppress SpringModelInspection -->
+    <property name="resource" value="file:out/production/magma-benchmark/results/results.js"/>
+    <property name="lineAggregator">
+      <bean class="org.obiba.magma.benchmark.writer.JsonLineAggregator"/>
+    </property>
+    <property name="lineSeparator" value=","/>
+    <property name="headerCallback" ref="jsonHeaderFooterCallback"/>
+    <property name="footerCallback" ref="jsonHeaderFooterCallback"/>
+  </bean>
+
+  <bean id="resultsWriter" class="org.obiba.magma.benchmark.writer.MultipleItemWriter">
+    <property name="writers">
+      <list>
+        <ref bean="csvWriter"/>
+        <ref bean="jsonWriter"/>
+      </list>
     </property>
   </bean>
 

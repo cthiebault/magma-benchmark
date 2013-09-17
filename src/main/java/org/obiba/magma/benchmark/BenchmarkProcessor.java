@@ -46,7 +46,7 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   @AfterProcess
   public void afterProcess(BenchmarkItem item, BenchmarkResult result) {
     log.info("{} - Generated data ({} variables, {} entities) in {}", result.getDatasource(), result.getNbVariables(),
-        result.getNbEntities(), result.formatImportDuration());
+        result.getNbEntities(), result.getImportDurationFormatted());
   }
 
 }
