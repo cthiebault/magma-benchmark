@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <util:properties id="mariadb" location="jdbc-mariadb.properties"/>
+
+  <bean id="mariadbDataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean" init-method="init"
+      destroy-method="close">
+    <property name="uniqueResourceName" value="mariadb-datasource"/>
+    <property name="url" value="#{mariadb.url}"/>
+    <property name="driverClassName" value="#{mariadb.driverClassName}"/>
+    <property name="user" value="#{mariadb.username}"/>
+    <property name="password" value="#{mariadb.password}"/>
+    <property name="minPoolSize" value="3"/>
+    <property name="poolSize" value="50"/>
+  </bean>
+
+  <bean id="mariadbSessionFactoryProvider"
+      class="org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider">
+    <property name="dataSource" ref="mariadbDataSource"/>
+    <property name="dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+  </bean>
+
+</beans>

@@ -1,100 +1,40 @@
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-         http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-  <context:annotation-config/>
-  <context:component-scan base-package="org.obiba.magma"/>
+  <import resource="batch-context.xml"/>
+  <import resource="hsql-context.xml"/>
+  <import resource="mysql-context.xml"/>
+  <!--<import resource="mariadb-context.xml"/>-->
+  <!--<import resource="postgresql-context.xml"/>-->
 
-  <util:properties id="mysql" location="jdbc-mysql.properties"/>
-  <util:properties id="hsql" location="jdbc-hsql.properties"/>
-  <util:properties id="postgresql" location="jdbc-postgresql.properties"/>
-  <util:properties id="mariadb" location="jdbc-mariadb.properties"/>
+  <tx:annotation-driven/>
+  <context:annotation-config/>
+  <context:component-scan base-package="org.obiba.magma.benchmark"/>
+
   <util:properties id="mongo" location="mongodb.properties"/>
 
-  <bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager">
-  </bean>
-
-  <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
-    <property name="transactionManager" ref="transactionManager"/>
-  </bean>
-
-  <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
-    <property name="jobRepository" ref="jobRepository"/>
-    <property name="taskExecutor">
-      <bean class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
-    </property>
-  </bean>
-
-  <job id="benchmarkJob" xmlns="http://www.springframework.org/schema/batch">
-    <step id="generateVariableStep" next="importSingleTableStep">
-      <tasklet ref="variableRepository"/>
-    </step>
-    <step id="importSingleTableStep">
-      <tasklet>
-        <chunk reader="benchmarkItemReader" processor="benchmarkProcessor" writer="resultsWriter" commit-interval="1"/>
-      </tasklet>
-    </step>
-  </job>
-
-  <bean name="benchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
-    <property name="resource" value="classpath:jobs.csv"/>
-    <property name="comments" value="#"/>
-    <property name="lineMapper">
-      <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
-        <property name="lineTokenizer">
-          <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
-            <property name="delimiter" value=","/>
-            <property name="names" value="datasource,flavor,nbEntities"/>
-          </bean>
-        </property>
-        <property name="fieldSetMapper">
-          <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-            <property name="targetType" value="org.obiba.magma.benchmark.BenchmarkItem"/>
-          </bean>
-        </property>
+  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManager">
+      <bean class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+        <property name="forceShutdown" value="false"/>
       </bean>
     </property>
-    <!-- skip the header -->
-    <property name="linesToSkip" value="1"/>
+    <property name="userTransaction">
+      <bean class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="200000"/>
+      </bean>
+    </property>
+    <property name="allowCustomIsolationLevels" value="true"/>
   </bean>
 
-  <bean id="csvWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
-    <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:results/benchmark-results.csv"/>
-    <property name="lineAggregator">
-      <bean class="org.obiba.magma.benchmark.writer.CsvLineAggregator"/>
-    </property>
-    <property name="headerCallback">
-      <bean class="org.obiba.magma.benchmark.writer.CsvHeaderCallback"/>
-    </property>
+  <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" scope="prototype">
+    <property name="transactionManager" ref="transactionManager"/>
   </bean>
-
-  <bean id="jsonHeaderFooterCallback" class="org.obiba.magma.benchmark.writer.JsonHeaderFooterCallback"/>
-
-  <bean id="jsonWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
-    <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:results/benchmark-results.js"/>
-    <property name="lineAggregator">
-      <bean class="org.obiba.magma.benchmark.writer.JsonLineAggregator"/>
-    </property>
-    <property name="lineSeparator" value=","/>
-    <property name="headerCallback" ref="jsonHeaderFooterCallback"/>
-    <property name="footerCallback" ref="jsonHeaderFooterCallback"/>
-  </bean>
-
-  <bean id="resultsWriter" class="org.obiba.magma.benchmark.writer.MultipleItemWriter">
-    <property name="writers">
-      <list>
-        <ref bean="csvWriter"/>
-        <ref bean="jsonWriter"/>
-      </list>
-    </property>
-  </bean>
-
-  <bean id="benchmarkProcessor" class="org.obiba.magma.benchmark.BenchmarkProcessor"/>
 
 </beans>

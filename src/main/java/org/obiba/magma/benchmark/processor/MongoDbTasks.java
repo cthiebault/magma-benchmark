@@ -7,14 +7,14 @@ import org.obiba.magma.datasource.mongodb.MongoDBFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
-public class MongoDbProcessor extends AbstractDatasourceProcessor {
+@Component("mongoTasks")
+public class MongoDbTasks extends AbstractTransactionalTasks {
 
   @Value("#{mongo['connectionURI']}")
   private String connectionURI;
 
   @Override
-  protected Datasource createDatasource(BenchmarkItem item) {
+  public Datasource createDatasource(BenchmarkItem item) {
     return new MongoDBDatasource("mongo-" + item.getNbEntities(), new MongoDBFactory(connectionURI));
   }
 

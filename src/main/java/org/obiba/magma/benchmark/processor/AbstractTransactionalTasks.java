@@ -15,42 +15,25 @@ import org.obiba.magma.benchmark.BenchmarkResult;
 import org.obiba.magma.benchmark.VariableRepository;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.support.DatasourceCopier;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
-public abstract class AbstractDatasourceProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
+@Component
+@Transactional
+public abstract class AbstractTransactionalTasks {
 
   public static final String TABLE_NAME = "Table1";
 
   @Autowired
   private VariableRepository variableRepository;
 
-  protected abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
+  public abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
 
-  @Override
-  public BenchmarkResult process(BenchmarkItem item) throws Exception {
-
-    Datasource datasource = createDatasource(item);
-
-    BenchmarkResult result = new BenchmarkResult();
-    result.withNbVariables(variableRepository.getNbVariables()) //
-        .withDatasource(item.getDatasource()) //
-        .withFlavor(item.getFlavor()) //
-        .withNbEntities(item.getNbEntities());
-
-    importData(item.getNbEntities(), datasource, result);
-
-    readVector(datasource, result);
-
-    deleteDatasource(datasource, result);
-
-    return result;
-  }
-
-  private void importData(int nbEntities, Datasource datasource, BenchmarkResult result) throws IOException {
+  public void importData(int nbEntities, Datasource datasource, BenchmarkResult result) throws IOException {
     long importStart = System.currentTimeMillis();
     ValueTable srcTable = new GeneratedValueTable(datasource, variableRepository.getVariables(), nbEntities);
     MagmaEngine.get().addDatasource(datasource);
@@ -59,14 +42,14 @@ public abstract class AbstractDatasourceProcessor implements ItemProcessor<Bench
     result.withImportDuration(importEnd - importStart);
   }
 
-  private void readVector(Datasource datasource, BenchmarkResult result) {
+  public void readVector(Datasource datasource, BenchmarkResult result) {
     long readStart = System.currentTimeMillis();
     readVector(datasource);
     long readEnd = System.currentTimeMillis();
     result.withVectorReadDuration(readEnd - readStart);
   }
 
-  private void deleteDatasource(Datasource datasource, BenchmarkResult result) throws Exception {
+  public void deleteDatasource(Datasource datasource, BenchmarkResult result) throws Exception {
     long deleteStart = System.currentTimeMillis();
     if(datasource.canDrop()) datasource.drop();
     MagmaEngine.get().removeDatasource(datasource);
@@ -74,7 +57,7 @@ public abstract class AbstractDatasourceProcessor implements ItemProcessor<Bench
     result.withDeleteDuration(deleteEnd - deleteStart);
   }
 
-  static void readVector(Datasource datasource) {
+  public void readVector(Datasource datasource) {
     ValueTable table = datasource.getValueTable(TABLE_NAME);
     Variable variable = Iterables.getFirst(table.getVariables(), null);
     if(variable == null) throw new IllegalStateException("variable should not be null");

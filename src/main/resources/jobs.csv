@@ -14,7 +14,7 @@ datasource,flavor,nbEntities
 #jdbc,postgresql,1000
 #jdbc,postgresql,10000
 #jdbc,postgresql,100000
-#hibernate,mysql,10
+hibernate,mysql,10
 #hibernate,mysql,100
 #hibernate,mysql,1000
 #hibernate,mysql,10000
