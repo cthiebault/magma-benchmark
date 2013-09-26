@@ -21,7 +21,6 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   private VariableRepository variableRepository;
 
   @Override
-  @SuppressWarnings("unchecked")
   public BenchmarkResult process(BenchmarkItem item) throws Exception {
     AbstractTransactionalTasks tasks = applicationContext
         .getBean(item.getDatasource() + "Tasks", AbstractTransactionalTasks.class);
@@ -41,13 +40,13 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
 
   @BeforeProcess
   public void beforeProcess(BenchmarkItem item) {
-    log.info("Generate Data for {} {}", item.getDatasource(), item.getFlavor());
+    log.info("Start benchmark of {} {}", item.getDatasource(), item.getFlavor());
   }
 
   @AfterProcess
   public void afterProcess(BenchmarkItem item, BenchmarkResult result) {
-    log.info("{} - Generated data ({} variables, {} entities) in {}", result.getDatasource(), result.getNbVariables(),
-        result.getNbEntities(), result.getImportDurationFormatted());
+    log.info("Finished benchmark of {} - Generated data ({} variables, {} entities) in {}", result.getDatasource(),
+        result.getNbVariables(), result.getNbEntities(), result.getImportDurationFormatted());
   }
 
 }
