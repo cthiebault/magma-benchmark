@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark.processor;
+package org.obiba.magma.benchmark.tasks;
 
 import java.io.IOException;
 import java.util.Properties;

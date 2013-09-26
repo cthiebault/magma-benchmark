@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark.processor;
+package org.obiba.magma.benchmark.tasks;
 
 import org.obiba.magma.Datasource;
 import org.obiba.magma.benchmark.BenchmarkItem;

@@ -1,7 +1,7 @@
 package org.obiba.magma.benchmark;
 
 import org.obiba.magma.Datasource;
-import org.obiba.magma.benchmark.processor.AbstractTransactionalTasks;
+import org.obiba.magma.benchmark.tasks.AbstractTransactionalTasks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.annotation.AfterProcess;
