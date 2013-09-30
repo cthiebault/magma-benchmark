@@ -9,7 +9,6 @@ import org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.benchmark.BenchmarkItem;
-import org.obiba.magma.benchmark.BenchmarkResult;
 import org.obiba.magma.datasource.hibernate.HibernateDatasource;
 import org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +54,8 @@ public class HibernateTasks extends AbstractTransactionalTasks {
   }
 
   @Override
-  public void deleteDatasource(Datasource datasource, BenchmarkResult result) throws Exception {
-    super.deleteDatasource(datasource, result);
+  public void deleteDatasource(Datasource datasource) throws Exception {
+    super.deleteDatasource(datasource);
     // delete all entities
     ((HibernateDatasource) datasource).getSessionFactory().getCurrentSession()
         .createQuery("delete from VariableEntityState").executeUpdate();

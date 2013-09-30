@@ -1,5 +1,7 @@
 package org.obiba.magma.benchmark;
 
+import java.util.concurrent.TimeUnit;
+
 import org.obiba.magma.Datasource;
 import org.obiba.magma.benchmark.tasks.AbstractTransactionalTasks;
 import org.slf4j.Logger;
@@ -9,6 +11,8 @@ import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+
+import com.google.common.base.Stopwatch;
 
 public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
 
@@ -32,9 +36,19 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
         .withNbEntities(item.getNbEntities());
 
     Datasource datasource = tasks.createDatasource(item);
-    tasks.importData(item.getNbEntities(), datasource, result);
-    tasks.readVector(datasource, result);
-    tasks.deleteDatasource(datasource, result);
+
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    tasks.importData(item.getNbEntities(), datasource);
+    result.withImportDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+
+    stopwatch.start();
+    tasks.readVector(datasource);
+    result.withVectorReadDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+
+    stopwatch.start();
+    tasks.deleteDatasource(datasource);
+    result.withDeleteDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+
     return result;
   }
 

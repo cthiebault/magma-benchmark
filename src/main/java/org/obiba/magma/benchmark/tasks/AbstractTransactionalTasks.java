@@ -11,7 +11,6 @@ import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VectorSource;
 import org.obiba.magma.benchmark.BenchmarkItem;
-import org.obiba.magma.benchmark.BenchmarkResult;
 import org.obiba.magma.benchmark.VariableRepository;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.support.DatasourceCopier;
@@ -33,28 +32,10 @@ public abstract class AbstractTransactionalTasks {
 
   public abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
 
-  public void importData(int nbEntities, Datasource datasource, BenchmarkResult result) throws IOException {
-    long importStart = System.currentTimeMillis();
+  public void importData(int nbEntities, Datasource datasource) throws IOException {
     ValueTable srcTable = new GeneratedValueTable(datasource, variableRepository.getVariables(), nbEntities);
     MagmaEngine.get().addDatasource(datasource);
     DatasourceCopier.Builder.newCopier().build().copy(srcTable, TABLE_NAME, datasource);
-    long importEnd = System.currentTimeMillis();
-    result.withImportDuration(importEnd - importStart);
-  }
-
-  public void readVector(Datasource datasource, BenchmarkResult result) {
-    long readStart = System.currentTimeMillis();
-    readVector(datasource);
-    long readEnd = System.currentTimeMillis();
-    result.withVectorReadDuration(readEnd - readStart);
-  }
-
-  public void deleteDatasource(Datasource datasource, BenchmarkResult result) throws Exception {
-    long deleteStart = System.currentTimeMillis();
-    if(datasource.canDrop()) datasource.drop();
-    MagmaEngine.get().removeDatasource(datasource);
-    long deleteEnd = System.currentTimeMillis();
-    result.withDeleteDuration(deleteEnd - deleteStart);
   }
 
   public void readVector(Datasource datasource) {
@@ -74,4 +55,8 @@ public abstract class AbstractTransactionalTasks {
     vectorSource.getValues(set);
   }
 
+  public void deleteDatasource(Datasource datasource) throws Exception {
+    if(datasource.canDrop()) datasource.drop();
+    MagmaEngine.get().removeDatasource(datasource);
+  }
 }
