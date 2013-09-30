@@ -25,7 +25,7 @@ import com.google.common.collect.Sets;
 @Transactional
 public abstract class AbstractTransactionalTasks {
 
-  public static final String TABLE_NAME = "Table1";
+  static final String TABLE_NAME = "Table1";
 
   @Autowired
   private VariableRepository variableRepository;

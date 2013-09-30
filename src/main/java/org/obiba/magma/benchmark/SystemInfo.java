@@ -2,9 +2,10 @@ package org.obiba.magma.benchmark;
 
 import java.io.File;
 
+@SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class SystemInfo {
 
-  public static void main(String args[]) {
+  public static void main(String... args[]) {
 
 //    Properties properties = System.getProperties();
 //    for(Object key : properties.keySet()) {

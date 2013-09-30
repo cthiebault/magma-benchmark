@@ -1,6 +1,5 @@
 package org.obiba.magma.benchmark.tasks;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.hibernate.SessionFactory;
@@ -38,7 +37,7 @@ public class HibernateTasks extends AbstractTransactionalTasks {
     return datasource;
   }
 
-  private SessionFactory getSessionFactory(String flavor) throws IOException {
+  private SessionFactory getSessionFactory(String flavor) {
     LocalSessionFactoryProvider provider = applicationContext
         .getBean(flavor + "SessionFactoryProvider", LocalSessionFactoryProvider.class);
     Properties properties = new Properties();
