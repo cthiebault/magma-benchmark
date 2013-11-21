@@ -2,18 +2,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+  <import resource="commons-context.xml"/>
+  <import resource="atomikos-hsql-context.xml"/>
+  <import resource="atomikos-mysql-context.xml"/>
+
+  <bean id="jtaTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init"
+      destroy-method="close">
+    <property name="forceShutdown" value="false"/>
+  </bean>
+
+  <bean id="userTransaction" class="com.atomikos.icatch.jta.UserTransactionImp"/>
+
   <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-    <property name="transactionManager">
-      <bean class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
-        <property name="forceShutdown" value="false"/>
-      </bean>
-    </property>
-    <property name="userTransaction">
-      <bean class="com.atomikos.icatch.jta.UserTransactionImp">
-        <property name="transactionTimeout" value="200000"/>
-      </bean>
-    </property>
+    <property name="transactionManager" ref="jtaTransactionManager"/>
+    <property name="userTransaction" ref="userTransaction"/>
     <property name="allowCustomIsolationLevels" value="true"/>
+    <!-- Set a very high timeout: 10 days (864000s) -->
+    <property name="defaultTimeout" value="864000"/>
   </bean>
 
   <bean id="batchDataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean" init-method="init"

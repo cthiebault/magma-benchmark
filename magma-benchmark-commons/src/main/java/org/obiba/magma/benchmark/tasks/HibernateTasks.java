@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.benchmark.BenchmarkItem;
+import org.obiba.magma.benchmark.support.SessionFactoryFactory;
 import org.obiba.magma.datasource.hibernate.HibernateDatasource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

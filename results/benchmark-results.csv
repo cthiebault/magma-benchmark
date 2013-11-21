@@ -1,3 +1,1 @@
 datasource,flavor,nb entities,nb variables,import duration in ms,import duration,vector read duration in ms,vector read duration,delete duration in ms,delete duration
-jdbc,mysql,10,100,5900,5 seconds and 900 milliseconds,5902,5 seconds and 902 milliseconds,5902,5 seconds and 902 milliseconds
-jdbc,mysql,100,100,2445,2 seconds and 445 milliseconds,2446,2 seconds and 446 milliseconds,2446,2 seconds and 446 milliseconds

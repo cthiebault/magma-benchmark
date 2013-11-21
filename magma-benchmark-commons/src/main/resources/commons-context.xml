@@ -8,10 +8,6 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
   <import resource="batch-context.xml"/>
-  <import resource="hsql-context.xml"/>
-  <import resource="mysql-context.xml"/>
-  <!--<import resource="mariadb-context.xml"/>-->
-  <!--<import resource="postgresql-context.xml"/>-->
 
   <tx:annotation-driven/>
   <context:annotation-config/>

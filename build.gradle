@@ -165,6 +165,9 @@ allprojects {
 
 }
 
+rootProject.dependencies {
+  compile project(':magma-benchmark-atomikos')
+}
 
 subprojects { subProject ->
 
