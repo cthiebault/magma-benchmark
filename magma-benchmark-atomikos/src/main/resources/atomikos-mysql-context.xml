@@ -16,10 +16,4 @@
     <property name="poolSize" value="50"/>
   </bean>
 
-  <bean id="mysqlSessionFactoryProvider"
-      class="org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider">
-    <property name="dataSource" ref="mysqlDataSource"/>
-    <property name="dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-  </bean>
-
 </beans>

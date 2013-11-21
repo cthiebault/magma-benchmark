@@ -1,0 +1,30 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManager">
+      <bean class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+        <property name="forceShutdown" value="false"/>
+      </bean>
+    </property>
+    <property name="userTransaction">
+      <bean class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="200000"/>
+      </bean>
+    </property>
+    <property name="allowCustomIsolationLevels" value="true"/>
+  </bean>
+
+  <bean id="batchDataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean" init-method="init"
+      destroy-method="close">
+    <property name="uniqueResourceName" value="batch-datasource"/>
+    <property name="url" value="jdbc:hsqldb:file:build/batch.db;shutdown=true"/>
+    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    <property name="user" value="sa"/>
+    <property name="password" value=""/>
+    <property name="minPoolSize" value="3"/>
+    <property name="poolSize" value="50"/>
+  </bean>
+
+</beans>

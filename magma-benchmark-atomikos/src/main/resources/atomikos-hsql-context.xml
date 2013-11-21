@@ -16,10 +16,4 @@
     <property name="poolSize" value="50"/>
   </bean>
 
-  <bean id="hsqlSessionFactoryProvider"
-      class="org.obiba.magma.datasource.hibernate.support.LocalSessionFactoryProvider">
-    <property name="dataSource" ref="hsqlDataSource"/>
-    <property name="dialect" value="org.hibernate.dialect.HSQLDialect"/>
-  </bean>
-
 </beans>

@@ -19,22 +19,8 @@
 
   <util:properties id="mongo" location="mongodb.properties"/>
 
-  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-    <property name="transactionManager">
-      <bean class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
-        <property name="forceShutdown" value="false"/>
-      </bean>
-    </property>
-    <property name="userTransaction">
-      <bean class="com.atomikos.icatch.jta.UserTransactionImp">
-        <property name="transactionTimeout" value="200000"/>
-      </bean>
-    </property>
-    <property name="allowCustomIsolationLevels" value="true"/>
-  </bean>
-
-  <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" scope="prototype">
-    <property name="transactionManager" ref="transactionManager"/>
-  </bean>
+  <!--<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" scope="prototype">-->
+  <!--<property name="transactionManager" ref="transactionManager"/>-->
+  <!--</bean>-->
 
 </beans>

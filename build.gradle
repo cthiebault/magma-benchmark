@@ -40,9 +40,9 @@ allprojects {
   defaultTasks 'build'
 
   repositories {
+    mavenLocal()
     maven { url 'http://repo.obiba.org/repo' }
     mavenCentral()
-    mavenLocal()
   }
 
   tasks.withType(Compile) {
@@ -169,17 +169,17 @@ allprojects {
 subprojects { subProject ->
 
   dependencies {
-
     // for snapshot, see http://java.dzone.com/articles/deploying-artifact-local-cache
     compile('com.google.code.findbugs:jsr305:2.0.1')
     compile('com.google.code.gson:gson:2.2.4')
     compile('com.google.guava:guava:15.0')
+    compile('org.hibernate:hibernate-ehcache:4.2.5.Final')
     compile('net.sourceforge.findbugs:annotations:1.3.2')
-    compile("org.obiba.magma:magma-api:${magmaVersion}") { changing = true }
-    compile("org.obiba.magma:magma-data-generator:${magmaVersion}") { changing = true }
-    compile("org.obiba.magma:magma-datasource-hibernate:${magmaVersion}") { changing = true }
-    compile("org.obiba.magma:magma-datasource-jdbc:${magmaVersion}") { changing = true }
-    compile("org.obiba.magma:magma-datasource-mongodb:${magmaVersion}") { changing = true }
+    compile("org.obiba.magma:magma-api:${magmaVersion}")
+    compile("org.obiba.magma:magma-data-generator:${magmaVersion}")
+    compile("org.obiba.magma:magma-datasource-hibernate:${magmaVersion}")
+    compile("org.obiba.magma:magma-datasource-jdbc:${magmaVersion}")
+    compile("org.obiba.magma:magma-datasource-mongodb:${magmaVersion}")
     compile("org.slf4j:slf4j-api:${slf4jVersion}")
     compile('org.springframework:spring-orm:3.2.4.RELEASE')
     compile('org.springframework.batch:spring-batch-core:2.2.2.RELEASE')
@@ -189,11 +189,9 @@ subprojects { subProject ->
     runtime('mysql:mysql-connector-java:5.1.26')
     runtime('net.sf.ehcache:ehcache-core:2.6.6')
     runtime('org.hsqldb:hsqldb:2.3.0')
-    runtime('org.hibernate:hibernate-ehcache:4.2.5.Final')
     runtime('org.postgresql:postgresql:9.2-1003-jdbc4')
     runtime("org.slf4j:slf4j-log4j12:${slf4jVersion}")
     runtime("org.slf4j:jcl-over-slf4j:${slf4jVersion}")
   }
-
 
 }
