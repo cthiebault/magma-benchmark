@@ -10,7 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MagmaBenchmark {
+public class MagmaAtomikosBenchmark {
 
   @Autowired
   private JobLauncher jobLauncher;
@@ -18,13 +18,13 @@ public class MagmaBenchmark {
   @Autowired
   private Job benchmarkJob;
 
-  public void run(long nbVariables) throws JobExecutionException {
+  public void startJobs(long nbVariables) throws JobExecutionException {
     jobLauncher.run(benchmarkJob, new JobParametersBuilder().addLong("nbVariables", nbVariables).toJobParameters());
   }
 
-  public static void main(String... args) throws Exception {
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/application-context.xml");
-    MagmaBenchmark benchmark = applicationContext.getBean(MagmaBenchmark.class);
-    benchmark.run(100);
+  public static void run(long nbVariables) throws Exception {
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/atomikos-context.xml");
+    MagmaAtomikosBenchmark benchmark = applicationContext.getBean(MagmaAtomikosBenchmark.class);
+    benchmark.startJobs(nbVariables);
   }
 }
