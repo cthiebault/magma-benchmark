@@ -1,0 +1,20 @@
+rootProject.name = 'magma-benchmark'
+
+include ':magma-benchmark-commons',
+    ':magma-benchmark-atomikos',
+    ':magma-benchmark-jotm',
+    ':magma-benchmark-jotm:jotm-c3p0',
+    ':magma-benchmark-jotm:jotm-commons-dbcp',
+    ':magma-benchmark-jotm:jotm-tomcat-jdbc'
+
+// allow us to rename sub-projects’ build files
+setBuildFileName(rootProject)
+
+def setBuildFileName(project) {
+  project.children.each { childProject ->
+    childProject.buildFileName = "${childProject.name}.gradle"
+    assert childProject.projectDir.isDirectory()
+    assert childProject.buildFile.isFile()
+    setBuildFileName(childProject)
+  }
+}

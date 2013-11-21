@@ -1,0 +1,12 @@
+description = 'Magma Benchmark Atomikos'
+
+ext {
+  atomikosVersion = '3.9.0.M1'
+}
+
+dependencies {
+  compile project(':magma-benchmark-commons')
+  compile("com.atomikos:transactions-hibernate3:${atomikosVersion}")
+  compile("com.atomikos:transactions-jdbc:${atomikosVersion}")
+  compile("com.atomikos:transactions-jta:${atomikosVersion}")
+}

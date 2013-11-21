@@ -1,0 +1,7 @@
+description = 'Magma Benchmark JOTM with Commons-DBCP'
+
+dependencies {
+  compile project(':magma-benchmark-commons')
+  compile('commons-dbcp:commons-dbcp:1.4')
+
+}

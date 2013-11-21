@@ -1,0 +1,6 @@
+description = 'Magma Benchmark JOTM with c3p0'
+
+dependencies {
+  compile project(':magma-benchmark-commons')
+
+}
