@@ -1,6 +1,5 @@
 package org.obiba.magma.benchmark.fs;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.obiba.magma.Datasource;
@@ -12,6 +11,7 @@ import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.ResourceUtils;
 
 import com.google.common.base.Stopwatch;
 
@@ -35,7 +35,7 @@ public class FsDatasourceProcessor implements ItemProcessor<FsDatasourceBenchmar
     Datasource datasource = tasks.createDatasource(item);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    tasks.importFsDatasource(new File(item.getSrcFsDatasource()), datasource);
+    tasks.importFsDatasource(ResourceUtils.getFile("/" + item.getSrcFsDatasource()), datasource);
     result.withImportDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
 
     stopwatch.start();

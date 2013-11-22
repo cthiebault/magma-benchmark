@@ -26,9 +26,8 @@ public class MagmaAtomikosBenchmark {
         .run(generatedDatasourceJob, new JobParametersBuilder().addLong("nbVariables", nbVariables).toJobParameters());
   }
 
-  public void startFsDatasourceJobs(String srcFsDatasource) throws JobExecutionException {
-    jobLauncher.run(fsDatasourceJob,
-        new JobParametersBuilder().addString("srcFsDatasource", srcFsDatasource).toJobParameters());
+  public void startFsDatasourceJobs() throws JobExecutionException {
+    jobLauncher.run(fsDatasourceJob, new JobParametersBuilder().toJobParameters());
   }
 
   public static void runWithGeneratedDatasource(long nbVariables) throws Exception {
@@ -37,10 +36,10 @@ public class MagmaAtomikosBenchmark {
         .startGeneratedDatasourceJobs(nbVariables);
   }
 
-  public static void runWithFsDatasource(String srcFsDatasource) throws Exception {
+  public static void runWithFsDatasource() throws Exception {
     new ClassPathXmlApplicationContext("/atomikos-context.xml") //
         .getBean(MagmaAtomikosBenchmark.class) //
-        .startFsDatasourceJobs(srcFsDatasource);
+        .startFsDatasourceJobs();
   }
 
 }
