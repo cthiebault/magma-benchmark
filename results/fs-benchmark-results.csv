@@ -1,2 +1,2 @@
 datasource,flavor,src datasource,import duration in ms,import duration,vector read duration in ms,vector read duration,delete duration in ms,delete duration
-hibernate,mysql,5-onyx-data.zip,27232,27 seconds and 232 milliseconds,27233,27 seconds and 233 milliseconds,0,null
+hibernate,mysql,20-onyx-data.zip,38137,38 seconds and 137 milliseconds,38137,38 seconds and 137 milliseconds,0,null

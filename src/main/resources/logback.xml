@@ -11,7 +11,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.obiba" level="debug"/>
+  <logger name="org.obiba.magma.benchmark" level="debug"/>
   <!--<logger name="org.springframework.batch" level="debug"/>-->
   <logger name="com.atomikos" level="warn"/>
 
