@@ -167,6 +167,7 @@ allprojects {
 
 rootProject.dependencies {
   compile project(':magma-benchmark-atomikos')
+  compile project(':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc')
 }
 
 subprojects { subProject ->

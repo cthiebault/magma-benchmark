@@ -2,5 +2,6 @@ description = 'Magma Benchmark JOTM with Tomcat-JDBC'
 
 dependencies {
   compile project(':magma-benchmark-commons')
-
+  compile project(':magma-benchmark-jotm')
+  compile('org.apache.tomcat:tomcat-jdbc:7.0.47')
 }

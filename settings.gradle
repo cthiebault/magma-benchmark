@@ -3,9 +3,9 @@ rootProject.name = 'magma-benchmark'
 include ':magma-benchmark-commons',
     ':magma-benchmark-atomikos',
     ':magma-benchmark-jotm',
-    ':magma-benchmark-jotm:jotm-c3p0',
-    ':magma-benchmark-jotm:jotm-commons-dbcp',
-    ':magma-benchmark-jotm:jotm-tomcat-jdbc'
+    ':magma-benchmark-jotm:magma-benchmark-jotm-c3p0',
+    ':magma-benchmark-jotm:magma-benchmark-jotm-commons-dbcp',
+    ':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc'
 
 // allow us to rename sub-projects’ build files
 setBuildFileName(rootProject)

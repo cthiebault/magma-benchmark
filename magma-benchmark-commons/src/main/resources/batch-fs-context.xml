@@ -17,6 +17,7 @@
   <bean id="fsDatasourceProcessor" class="org.obiba.magma.benchmark.fs.FsDatasourceProcessor"/>
 
   <bean name="fsDatasourceBenchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+    <!--suppress SpringModelInspection -->
     <property name="resource" value="classpath:fs-jobs.csv"/>
     <property name="comments" value="#"/>
     <property name="lineMapper">

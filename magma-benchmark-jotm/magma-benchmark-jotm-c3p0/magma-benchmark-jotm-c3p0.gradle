@@ -2,5 +2,5 @@ description = 'Magma Benchmark JOTM with c3p0'
 
 dependencies {
   compile project(':magma-benchmark-commons')
-
+  compile('com.mchange:c3p0:0.9.5-pre5')
 }

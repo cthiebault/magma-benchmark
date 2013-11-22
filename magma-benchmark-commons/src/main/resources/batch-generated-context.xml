@@ -17,6 +17,7 @@
   <bean id="generatedDatasourceProcessor" class="org.obiba.magma.benchmark.generated.GeneratedDatasourceProcessor"/>
 
   <bean name="generatedDatasourceBenchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+    <!--suppress SpringModelInspection -->
     <property name="resource" value="classpath:generated-jobs.csv"/>
     <property name="comments" value="#"/>
     <property name="lineMapper">

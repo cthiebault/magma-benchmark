@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <util:properties id="hsql" location="jdbc-hsql.properties"/>
+
+  <bean id="hsqlDataSource" class="org.obiba.magma.benchmark.support.TomcatDataSourceFactoryBean">
+    <property name="driverClass" value="#{hsql.driverClassName}"/>
+    <property name="url" value="#{hsql.url}"/>
+    <property name="username" value="#{hsql.username}"/>
+    <property name="password" value="#{hsql.password}"/>
+  </bean>
+
+</beans>

@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <import resource="commons-context.xml"/>
+
+  <bean id="jtaTransactionManager" class="org.obiba.magma.benchmark.support.JotmFactoryBean"/>
+
+  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManager" ref="jtaTransactionManager"/>
+    <property name="userTransaction" ref="jtaTransactionManager"/>
+    <!-- Set a very high timeout (10 days) -->
+    <property name="defaultTimeout" value="864000"/>
+    <property name="allowCustomIsolationLevels" value="true"/>
+  </bean>
+
+</beans>
