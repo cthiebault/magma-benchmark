@@ -12,7 +12,7 @@
   </appender>
 
   <logger name="org.obiba" level="debug"/>
-  <logger name="org.springframework.batch" level="debug"/>
+  <!--<logger name="org.springframework.batch" level="debug"/>-->
   <logger name="com.atomikos" level="warn"/>
 
   <root level="info">

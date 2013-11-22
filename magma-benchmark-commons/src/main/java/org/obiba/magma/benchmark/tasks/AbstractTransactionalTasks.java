@@ -27,43 +27,48 @@ import com.google.common.collect.Sets;
 @Transactional
 public abstract class AbstractTransactionalTasks {
 
-  static final String TABLE_NAME = "Table1";
-
   @Autowired
   private VariableRepository variableRepository;
+
+  protected AbstractTransactionalTasks() {
+  }
 
   public abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
 
   public void importGeneratedData(int nbEntities, Datasource destination) throws IOException {
     ValueTable srcTable = new GeneratedValueTable(destination, variableRepository.getVariables(), nbEntities);
     MagmaEngine.get().addDatasource(destination);
-    DatasourceCopier.Builder.newCopier().build().copy(srcTable, TABLE_NAME, destination);
+    DatasourceCopier.Builder.newCopier().build().copy(srcTable, "Table1", destination);
   }
 
   public void importFsDatasource(File srcFile, Datasource destination) throws IOException {
+
     FsDatasourceFactory factory = new FsDatasourceFactory();
     factory.setName("transient-" + srcFile.getName());
     factory.setFile(srcFile);
-    Datasource fsDatasource = factory.create();
+    String uid = MagmaEngine.get().addTransientDatasource(factory);
+    Datasource fsDatasource = MagmaEngine.get().getTransientDatasourceInstance(uid);
     MagmaEngine.get().addDatasource(destination);
     DatasourceCopier.Builder.newCopier().build().copy(fsDatasource, destination);
   }
 
   public void readVector(Datasource datasource) {
-    ValueTable table = datasource.getValueTable(TABLE_NAME);
-    Variable variable = Iterables.getFirst(table.getVariables(), null);
-    if(variable == null) throw new IllegalStateException("variable should not be null");
+    for(ValueTable table : datasource.getValueTables()) {
 
-    VariableEntity entity = Iterables.getFirst(table.getVariableEntities(), null);
-    if(entity == null) throw new IllegalStateException("entity should not be null");
+      Variable variable = Iterables.getFirst(table.getVariables(), null);
+      if(variable == null) throw new IllegalStateException("variable should not be null");
 
-    VariableValueSource valueSource = table.getVariableValueSource(variable.getName());
-    VectorSource vectorSource = valueSource.asVectorSource();
-    if(vectorSource == null) throw new IllegalStateException("vectorSource should not be null");
+      VariableEntity entity = Iterables.getFirst(table.getVariableEntities(), null);
+      if(entity == null) throw new IllegalStateException("entity should not be null");
 
-    SortedSet<VariableEntity> set = Sets.newTreeSet();
-    set.add(entity);
-    vectorSource.getValues(set);
+      VariableValueSource valueSource = table.getVariableValueSource(variable.getName());
+      VectorSource vectorSource = valueSource.asVectorSource();
+      if(vectorSource == null) throw new IllegalStateException("vectorSource should not be null");
+
+      SortedSet<VariableEntity> set = Sets.newTreeSet();
+      set.add(entity);
+      vectorSource.getValues(set);
+    }
   }
 
   public void deleteDatasource(Datasource datasource) throws Exception {

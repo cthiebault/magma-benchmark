@@ -39,16 +39,21 @@ public class FsDatasourceProcessor implements ItemProcessor<FsDatasourceBenchmar
     Stopwatch stopwatch = Stopwatch.createStarted();
     File file = ResourceUtils.getFile("classpath:" + item.getSrcFsDatasource());
     Preconditions.checkArgument(file.exists(), "File " + file.getAbsolutePath() + " does not exists");
+
+    log.debug("Import from {}", file.getAbsolutePath());
     tasks.importFsDatasource(file, datasource);
     result.withImportDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+    log.debug("Finished import from {} in {}", file.getName(), result.getImportDurationFormatted());
 
+    log.debug("Read vector from {}", datasource.getName());
     stopwatch.start();
     tasks.readVector(datasource);
     result.withVectorReadDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+    log.debug("Finished read vector from {} in {}", datasource.getName(), result.getVectorReadDurationFormatted());
 
-    stopwatch.start();
-    tasks.deleteDatasource(datasource);
-    result.withDeleteDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
+//    stopwatch.start();
+//    tasks.deleteDatasource(datasource);
+//    result.withDeleteDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
 
     return result;
   }

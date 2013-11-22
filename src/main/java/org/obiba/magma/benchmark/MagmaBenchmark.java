@@ -6,6 +6,6 @@ public class MagmaBenchmark {
 
   public static void main(String... args) throws Exception {
 //    MagmaAtomikosBenchmark.runWithGeneratedData(100);
-    MagmaAtomikosBenchmark.runWithFsDatasource();
+    new MagmaAtomikosBenchmark().startFsDatasourceJobs();
   }
 }
