@@ -1,0 +1,73 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+
+  <job id="fsDatasourceJob" xmlns="http://www.springframework.org/schema/batch">
+    <step id="importDatasourceStep">
+      <tasklet>
+        <chunk reader="fsDatasourceBenchmarkItemReader" processor="fsDatasourceProcessor"
+            writer="fsDatasourceResultsWriter"
+            commit-interval="1"/>
+      </tasklet>
+    </step>
+  </job>
+
+  <bean id="fsDatasourceProcessor" class="org.obiba.magma.benchmark.fs.FsDatasourceProcessor"/>
+
+  <bean name="fsDatasourceBenchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+    <property name="resource" value="classpath:fs-jobs.csv"/>
+    <property name="comments" value="#"/>
+    <property name="lineMapper">
+      <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+        <property name="lineTokenizer">
+          <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+            <property name="delimiter" value=","/>
+            <property name="names" value="datasource,flavor,srcFsDatasource"/>
+          </bean>
+        </property>
+        <property name="fieldSetMapper">
+          <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+            <property name="targetType" value="org.obiba.magma.benchmark.fs.FsDatasourceBenchmarkItem"/>
+          </bean>
+        </property>
+      </bean>
+    </property>
+    <!-- skip the header -->
+    <property name="linesToSkip" value="1"/>
+  </bean>
+
+  <bean id="fsDatasourceResultsWriter" class="org.obiba.magma.benchmark.writer.MultipleItemWriter">
+    <property name="writers">
+      <list>
+        <ref bean="fsDatasourceCsvWriter"/>
+        <ref bean="fsDatasourceJsonWriter"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="fsDatasourceCsvWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+    <!--suppress SpringModelInspection -->
+    <property name="resource" value="file:results/fs-benchmark-results.csv"/>
+    <property name="lineAggregator">
+      <bean class="org.obiba.magma.benchmark.writer.CsvLineAggregator"/>
+    </property>
+    <property name="headerCallback">
+      <bean class="org.obiba.magma.benchmark.fs.FsDatasourceCsvHeaderCallback"/>
+    </property>
+  </bean>
+
+  <bean id="fsDatasourceJsonWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+    <!--suppress SpringModelInspection -->
+    <property name="resource" value="file:results/fs-benchmark-results.js"/>
+    <property name="lineAggregator">
+      <bean class="org.obiba.magma.benchmark.writer.JsonLineAggregator"/>
+    </property>
+    <property name="lineSeparator" value=","/>
+    <property name="headerCallback" ref="jsonHeaderFooterCallback"/>
+    <property name="footerCallback" ref="jsonHeaderFooterCallback"/>
+  </bean>
+
+
+</beans>

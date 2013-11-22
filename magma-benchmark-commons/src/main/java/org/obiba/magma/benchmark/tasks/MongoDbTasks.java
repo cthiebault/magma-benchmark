@@ -15,7 +15,7 @@ public class MongoDbTasks extends AbstractTransactionalTasks {
 
   @Override
   public Datasource createDatasource(BenchmarkItem item) {
-    return new MongoDBDatasource("mongo-" + item.getNbEntities(), new MongoDBFactory(connectionURI));
+    return new MongoDBDatasource("mongo-" + item.getUid(), new MongoDBFactory(connectionURI));
   }
 
 }

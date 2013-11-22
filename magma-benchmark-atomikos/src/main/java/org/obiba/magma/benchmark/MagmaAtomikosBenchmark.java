@@ -5,26 +5,42 @@ import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings("StaticMethodOnlyUsedInOneClass")
 public class MagmaAtomikosBenchmark {
 
   @Autowired
   private JobLauncher jobLauncher;
 
   @Autowired
-  private Job benchmarkJob;
+  private Job generatedDatasourceJob;
 
-  public void startJobs(long nbVariables) throws JobExecutionException {
-    jobLauncher.run(benchmarkJob, new JobParametersBuilder().addLong("nbVariables", nbVariables).toJobParameters());
+  @Autowired
+  private Job fsDatasourceJob;
+
+  public void startGeneratedDatasourceJobs(long nbVariables) throws JobExecutionException {
+    jobLauncher
+        .run(generatedDatasourceJob, new JobParametersBuilder().addLong("nbVariables", nbVariables).toJobParameters());
   }
 
-  public static void run(long nbVariables) throws Exception {
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/atomikos-context.xml");
-    MagmaAtomikosBenchmark benchmark = applicationContext.getBean(MagmaAtomikosBenchmark.class);
-    benchmark.startJobs(nbVariables);
+  public void startFsDatasourceJobs(String srcFsDatasource) throws JobExecutionException {
+    jobLauncher.run(fsDatasourceJob,
+        new JobParametersBuilder().addString("srcFsDatasource", srcFsDatasource).toJobParameters());
   }
+
+  public static void runWithGeneratedDatasource(long nbVariables) throws Exception {
+    new ClassPathXmlApplicationContext("/atomikos-context.xml") //
+        .getBean(MagmaAtomikosBenchmark.class) //
+        .startGeneratedDatasourceJobs(nbVariables);
+  }
+
+  public static void runWithFsDatasource(String srcFsDatasource) throws Exception {
+    new ClassPathXmlApplicationContext("/atomikos-context.xml") //
+        .getBean(MagmaAtomikosBenchmark.class) //
+        .startFsDatasourceJobs(srcFsDatasource);
+  }
+
 }

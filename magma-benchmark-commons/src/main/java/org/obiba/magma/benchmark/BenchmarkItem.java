@@ -1,13 +1,13 @@
 package org.obiba.magma.benchmark;
 
 @SuppressWarnings("ParameterHidesMemberVariable")
-public class BenchmarkItem {
+public abstract class BenchmarkItem {
 
   private String datasource;
 
   private String flavor;
 
-  private int nbEntities;
+  public abstract String getUid();
 
   public String getDatasource() {
     return datasource;
@@ -25,14 +25,6 @@ public class BenchmarkItem {
     this.flavor = flavor;
   }
 
-  public int getNbEntities() {
-    return nbEntities;
-  }
-
-  public void setNbEntities(int nbEntities) {
-    this.nbEntities = nbEntities;
-  }
-
   public BenchmarkItem withDatasource(String datasource) {
     this.datasource = datasource;
     return this;
@@ -43,8 +35,4 @@ public class BenchmarkItem {
     return this;
   }
 
-  public BenchmarkItem withNbEntities(int nbEntities) {
-    this.nbEntities = nbEntities;
-    return this;
-  }
 }

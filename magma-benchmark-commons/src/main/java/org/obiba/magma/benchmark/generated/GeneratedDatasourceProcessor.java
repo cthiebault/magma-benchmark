@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark;
+package org.obiba.magma.benchmark.generated;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,9 +14,10 @@ import org.springframework.context.ApplicationContext;
 
 import com.google.common.base.Stopwatch;
 
-public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, BenchmarkResult> {
+public class GeneratedDatasourceProcessor
+    implements ItemProcessor<GeneratedDatasourceBenchmarkItem, GeneratedDatasourceBenchmarkResult> {
 
-  private static final Logger log = LoggerFactory.getLogger(BenchmarkProcessor.class);
+  private static final Logger log = LoggerFactory.getLogger(GeneratedDatasourceProcessor.class);
 
   @Autowired
   private ApplicationContext applicationContext;
@@ -25,20 +26,20 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   private VariableRepository variableRepository;
 
   @Override
-  public BenchmarkResult process(BenchmarkItem item) throws Exception {
+  public GeneratedDatasourceBenchmarkResult process(GeneratedDatasourceBenchmarkItem item) throws Exception {
     AbstractTransactionalTasks tasks = applicationContext
         .getBean(item.getDatasource() + "Tasks", AbstractTransactionalTasks.class);
 
-    BenchmarkResult result = new BenchmarkResult();
+    GeneratedDatasourceBenchmarkResult result = new GeneratedDatasourceBenchmarkResult();
     result.withNbVariables(variableRepository.getNbVariables()) //
+        .withNbEntities(item.getNbEntities()) //
         .withDatasource(item.getDatasource()) //
-        .withFlavor(item.getFlavor()) //
-        .withNbEntities(item.getNbEntities());
+        .withFlavor(item.getFlavor());
 
     Datasource datasource = tasks.createDatasource(item);
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    tasks.importData(item.getNbEntities(), datasource);
+    tasks.importGeneratedData(item.getNbEntities(), datasource);
     result.withImportDuration(stopwatch.stop().elapsed(TimeUnit.MILLISECONDS));
 
     stopwatch.start();
@@ -53,12 +54,12 @@ public class BenchmarkProcessor implements ItemProcessor<BenchmarkItem, Benchmar
   }
 
   @BeforeProcess
-  public void beforeProcess(BenchmarkItem item) {
+  public void beforeProcess(GeneratedDatasourceBenchmarkItem item) {
     log.info("Start benchmark of {} {}", item.getDatasource(), item.getFlavor());
   }
 
   @AfterProcess
-  public void afterProcess(BenchmarkItem item, BenchmarkResult result) {
+  public void afterProcess(GeneratedDatasourceBenchmarkItem item, GeneratedDatasourceBenchmarkResult result) {
     log.info("Finished benchmark of {} - Generated data ({} variables, {} entities) in {}", result.getDatasource(),
         result.getNbVariables(), result.getNbEntities(), result.getImportDurationFormatted());
   }

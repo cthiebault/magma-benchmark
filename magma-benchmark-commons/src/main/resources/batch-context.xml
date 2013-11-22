@@ -5,6 +5,9 @@
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
         http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
 
+  <import resource="batch-fs-context.xml"/>
+  <import resource="batch-generated-context.xml"/>
+
   <jdbc:initialize-database data-source="batchDataSource">
     <jdbc:script location="classpath:org/springframework/batch/core/schema-drop-hsqldb.sql"/>
     <jdbc:script location="classpath:org/springframework/batch/core/schema-hsqldb.sql"/>
@@ -19,72 +22,6 @@
     </property>
   </bean>
 
-  <job id="benchmarkJob" xmlns="http://www.springframework.org/schema/batch">
-    <step id="generateVariableStep" next="importSingleTableStep">
-      <tasklet ref="variableRepository"/>
-    </step>
-    <step id="importSingleTableStep">
-      <tasklet>
-        <chunk reader="benchmarkItemReader" processor="benchmarkProcessor" writer="resultsWriter" commit-interval="1"/>
-      </tasklet>
-    </step>
-  </job>
-
-  <bean name="benchmarkItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
-    <property name="resource" value="classpath:jobs.csv"/>
-    <property name="comments" value="#"/>
-    <property name="lineMapper">
-      <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
-        <property name="lineTokenizer">
-          <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
-            <property name="delimiter" value=","/>
-            <property name="names" value="datasource,flavor,nbEntities"/>
-          </bean>
-        </property>
-        <property name="fieldSetMapper">
-          <bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
-            <property name="targetType" value="org.obiba.magma.benchmark.BenchmarkItem"/>
-          </bean>
-        </property>
-      </bean>
-    </property>
-    <!-- skip the header -->
-    <property name="linesToSkip" value="1"/>
-  </bean>
-
-  <bean id="csvWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
-    <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:results/benchmark-results.csv"/>
-    <property name="lineAggregator">
-      <bean class="org.obiba.magma.benchmark.writer.CsvLineAggregator"/>
-    </property>
-    <property name="headerCallback">
-      <bean class="org.obiba.magma.benchmark.writer.CsvHeaderCallback"/>
-    </property>
-  </bean>
-
   <bean id="jsonHeaderFooterCallback" class="org.obiba.magma.benchmark.writer.JsonHeaderFooterCallback"/>
-
-  <bean id="jsonWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
-    <!--suppress SpringModelInspection -->
-    <property name="resource" value="file:results/benchmark-results.js"/>
-    <property name="lineAggregator">
-      <bean class="org.obiba.magma.benchmark.writer.JsonLineAggregator"/>
-    </property>
-    <property name="lineSeparator" value=","/>
-    <property name="headerCallback" ref="jsonHeaderFooterCallback"/>
-    <property name="footerCallback" ref="jsonHeaderFooterCallback"/>
-  </bean>
-
-  <bean id="resultsWriter" class="org.obiba.magma.benchmark.writer.MultipleItemWriter">
-    <property name="writers">
-      <list>
-        <ref bean="csvWriter"/>
-        <ref bean="jsonWriter"/>
-      </list>
-    </property>
-  </bean>
-
-  <bean id="benchmarkProcessor" class="org.obiba.magma.benchmark.BenchmarkProcessor"/>
 
 </beans>

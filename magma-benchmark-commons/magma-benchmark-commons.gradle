@@ -1,5 +1,6 @@
 description = 'Magma Benchmark Commons'
 
 dependencies {
-
+  compile("org.obiba.magma:magma-datasource-fs:${magmaVersion}")
+  compile("org.obiba.magma:magma-datasource-mongodb:${magmaVersion}")
 }

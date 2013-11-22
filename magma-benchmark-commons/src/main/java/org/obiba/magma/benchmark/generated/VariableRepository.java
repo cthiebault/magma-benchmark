@@ -1,4 +1,4 @@
-package org.obiba.magma.benchmark;
+package org.obiba.magma.benchmark.generated;
 
 import java.util.Collection;
 import java.util.List;

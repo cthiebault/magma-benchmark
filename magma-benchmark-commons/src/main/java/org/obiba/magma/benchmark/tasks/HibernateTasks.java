@@ -26,8 +26,7 @@ public class HibernateTasks extends AbstractTransactionalTasks {
   @Override
   public Datasource createDatasource(BenchmarkItem item) throws Exception {
     SessionFactory sessionFactory = getSessionFactory(item.getFlavor());
-    Datasource datasource = new HibernateDatasource(
-        item.getDatasource() + "-" + item.getFlavor() + "-" + item.getNbEntities(), sessionFactory);
+    Datasource datasource = new HibernateDatasource(item.getDatasource() + "-" + item.getUid(), sessionFactory);
     MagmaEngine.get().addDatasource(datasource);
     return datasource;
   }

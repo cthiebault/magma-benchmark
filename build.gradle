@@ -182,7 +182,7 @@ subprojects { subProject ->
     compile("org.obiba.magma:magma-data-generator:${magmaVersion}")
     compile("org.obiba.magma:magma-datasource-hibernate:${magmaVersion}")
     compile("org.obiba.magma:magma-datasource-jdbc:${magmaVersion}")
-    compile("org.obiba.magma:magma-datasource-mongodb:${magmaVersion}")
+
     compile("org.slf4j:slf4j-api:${slf4jVersion}")
     compile('org.springframework:spring-orm:3.2.4.RELEASE')
     compile('org.springframework.batch:spring-batch-core:2.2.2.RELEASE')

@@ -1,5 +1,6 @@
 package org.obiba.magma.benchmark.tasks;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.SortedSet;
 
@@ -11,7 +12,8 @@ import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
 import org.obiba.magma.VectorSource;
 import org.obiba.magma.benchmark.BenchmarkItem;
-import org.obiba.magma.benchmark.VariableRepository;
+import org.obiba.magma.benchmark.generated.VariableRepository;
+import org.obiba.magma.datasource.fs.support.FsDatasourceFactory;
 import org.obiba.magma.datasource.generated.GeneratedValueTable;
 import org.obiba.magma.support.DatasourceCopier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,18 @@ public abstract class AbstractTransactionalTasks {
 
   public abstract Datasource createDatasource(BenchmarkItem item) throws Exception;
 
-  public void importData(int nbEntities, Datasource datasource) throws IOException {
-    ValueTable srcTable = new GeneratedValueTable(datasource, variableRepository.getVariables(), nbEntities);
-    MagmaEngine.get().addDatasource(datasource);
-    DatasourceCopier.Builder.newCopier().build().copy(srcTable, TABLE_NAME, datasource);
+  public void importGeneratedData(int nbEntities, Datasource destination) throws IOException {
+    ValueTable srcTable = new GeneratedValueTable(destination, variableRepository.getVariables(), nbEntities);
+    MagmaEngine.get().addDatasource(destination);
+    DatasourceCopier.Builder.newCopier().build().copy(srcTable, TABLE_NAME, destination);
+  }
+
+  public void importFsDatasource(File srcFile, Datasource destination) throws IOException {
+    FsDatasourceFactory factory = new FsDatasourceFactory();
+    factory.setFile(srcFile);
+    Datasource fsDatasource = factory.create();
+    MagmaEngine.get().addDatasource(destination);
+    DatasourceCopier.Builder.newCopier().build().copy(fsDatasource, destination);
   }
 
   public void readVector(Datasource datasource) {
