@@ -42,6 +42,7 @@ public abstract class AbstractTransactionalTasks {
 
   public void importFsDatasource(File srcFile, Datasource destination) throws IOException {
     FsDatasourceFactory factory = new FsDatasourceFactory();
+    factory.setName("transient-" + srcFile.getName());
     factory.setFile(srcFile);
     Datasource fsDatasource = factory.create();
     MagmaEngine.get().addDatasource(destination);

@@ -5,7 +5,7 @@
 
 
   <job id="fsDatasourceJob" xmlns="http://www.springframework.org/schema/batch">
-    <step id="importDatasourceStep">
+    <step id="importFsDatasourceStep">
       <tasklet>
         <chunk reader="fsDatasourceBenchmarkItemReader" processor="fsDatasourceProcessor"
             writer="fsDatasourceResultsWriter"

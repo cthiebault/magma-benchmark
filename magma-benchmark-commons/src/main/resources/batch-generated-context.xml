@@ -5,7 +5,7 @@
 
 
   <job id="generatedDatasourceJob" xmlns="http://www.springframework.org/schema/batch">
-    <step id="importDatasourceStep">
+    <step id="importGeneratedDatasourceStep">
       <tasklet>
         <chunk reader="generatedDatasourceBenchmarkItemReader" processor="generatedDatasourceProcessor"
             writer="generatedDatasourceResultsWriter"
