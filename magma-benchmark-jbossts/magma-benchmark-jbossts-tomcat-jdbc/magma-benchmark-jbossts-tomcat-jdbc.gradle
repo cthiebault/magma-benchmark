@@ -1,0 +1,7 @@
+description = 'Magma Benchmark JBoss TS with Tomcat-JDBC'
+
+dependencies {
+  compile project(':magma-benchmark-commons')
+  compile project(':magma-benchmark-jbossts')
+  compile('org.apache.tomcat:tomcat-jdbc:7.0.47')
+}

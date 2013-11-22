@@ -13,6 +13,10 @@ public abstract class AbstractMagmaBenchmark {
   public AbstractMagmaBenchmark() {
     log.info("Start MagmaEngine");
     new MagmaEngine().extend(new MagmaXStreamExtension());
+
+    // JBossTS storage
+    System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "build/jbossts");
+    System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "build/jbossts");
   }
 
   public abstract void startGeneratedDatasourceJobs(long nbVariables) throws JobExecutionException;

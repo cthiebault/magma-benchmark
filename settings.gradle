@@ -5,7 +5,9 @@ include ':magma-benchmark-commons',
     ':magma-benchmark-jotm',
     ':magma-benchmark-jotm:magma-benchmark-jotm-c3p0',
     ':magma-benchmark-jotm:magma-benchmark-jotm-commons-dbcp',
-    ':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc'
+    ':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc',
+    ':magma-benchmark-jbossts',
+    ':magma-benchmark-jbossts:magma-benchmark-jbossts-tomcat-jdbc'
 
 // allow us to rename sub-projects’ build files
 setBuildFileName(rootProject)

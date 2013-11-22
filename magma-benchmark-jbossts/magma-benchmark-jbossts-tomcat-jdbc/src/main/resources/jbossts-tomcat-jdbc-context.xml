@@ -2,9 +2,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <import resource="jotm-context.xml"/>
-  <import resource="jotm-tomcat-jdbc-hsql-context.xml"/>
-  <import resource="jotm-tomcat-jdbc-mysql-context.xml"/>
+  <import resource="jbossts-context.xml"/>
+  <import resource="jbossts-tomcat-jdbc-hsql-context.xml"/>
+  <import resource="jbossts-tomcat-jdbc-mysql-context.xml"/>
 
   <bean id="abstractDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" abstract="true" destroy-method="close">
     <property name="maxIdle" value="10"/>
