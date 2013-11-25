@@ -168,6 +168,7 @@ allprojects {
 rootProject.dependencies {
   compile project(':magma-benchmark-atomikos')
   compile project(':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc')
+  compile project(':magma-benchmark-jotm:magma-benchmark-jotm-commons-dbcp')
   compile project(':magma-benchmark-jbossts:magma-benchmark-jbossts-tomcat-jdbc')
 }
 
@@ -191,11 +192,11 @@ subprojects { subProject ->
 
     runtime('ch.qos.logback:logback-classic:1.0.13')
     runtime('javassist:javassist:3.12.1.GA')
-    runtime('mariadb:mariadb-java-client:1.1.4')
+//    runtime('mariadb:mariadb-java-client:1.1.4')
     runtime('mysql:mysql-connector-java:5.1.26')
     runtime('net.sf.ehcache:ehcache-core:2.6.6')
     runtime('org.hsqldb:hsqldb:2.3.0')
-    runtime('org.postgresql:postgresql:9.2-1003-jdbc4')
+//    runtime('org.postgresql:postgresql:9.2-1003-jdbc4')
     runtime("org.slf4j:slf4j-api:${slf4jVersion}")
     runtime("org.slf4j:jcl-over-slf4j:${slf4jVersion}")
   }

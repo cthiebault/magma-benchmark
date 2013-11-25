@@ -8,6 +8,7 @@ public class MagmaBenchmark {
 //    MagmaAtomikosBenchmark.runWithGeneratedData(100);
 //    new MagmaAtomikosBenchmark().startFsDatasourceJobs();
 //    new MagmaJotmTomcatJdbcBenchmark().startFsDatasourceJobs();
-    new MagmaJBossTsTomcatJdbcBenchmark().startFsDatasourceJobs();
+    new MagmaJotmCommonsDbcpBenchmark().startFsDatasourceJobs();
+//    new MagmaJBossTsTomcatJdbcBenchmark().startFsDatasourceJobs();
   }
 }
