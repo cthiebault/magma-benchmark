@@ -13,6 +13,7 @@
 
   <logger name="org.obiba.magma.benchmark" level="debug"/>
   <logger name="org.obiba.magma.support" level="debug"/>
+  <logger name="org.obiba.magma.datasource.hibernate" level="debug"/>
 
   <logger name="com.arjuna" level="debug"/>
 
