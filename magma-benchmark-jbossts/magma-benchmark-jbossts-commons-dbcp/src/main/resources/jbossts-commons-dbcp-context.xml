@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <import resource="jbossts-context.xml"/>
+  <import resource="jbossts-commons-dbcp-hsql-context.xml"/>
+  <import resource="jbossts-commons-dbcp-mysql-context.xml"/>
+
+  <bean id="abstractDataSource" class="org.apache.commons.dbcp.managed.BasicManagedDataSource" abstract="true"
+      destroy-method="close">
+    <property name="transactionManager" ref="jtaTransactionManager"/>
+    <property name="maxIdle" value="10"/>
+    <property name="testOnBorrow" value="true"/>
+    <property name="testWhileIdle" value="false"/>
+    <property name="testOnReturn" value="false"/>
+  </bean>
+
+  <bean id="batchDataSource" parent="abstractDataSource">
+    <property name="url" value="jdbc:hsqldb:file:build/batch.db;shutdown=true"/>
+    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    <property name="username" value="sa"/>
+    <property name="password" value=""/>
+    <property name="validationQuery" value="select 1 from INFORMATION_SCHEMA.SYSTEM_USERS"/>
+  </bean>
+
+</beans>

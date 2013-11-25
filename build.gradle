@@ -170,6 +170,7 @@ rootProject.dependencies {
   compile project(':magma-benchmark-jotm:magma-benchmark-jotm-tomcat-jdbc')
   compile project(':magma-benchmark-jotm:magma-benchmark-jotm-commons-dbcp')
   compile project(':magma-benchmark-jbossts:magma-benchmark-jbossts-tomcat-jdbc')
+  compile project(':magma-benchmark-jbossts:magma-benchmark-jbossts-commons-dbcp')
 }
 
 subprojects { subProject ->
