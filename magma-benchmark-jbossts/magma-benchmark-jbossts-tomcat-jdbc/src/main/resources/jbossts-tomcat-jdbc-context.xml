@@ -11,8 +11,9 @@
     <property name="testOnBorrow" value="true"/>
     <property name="testWhileIdle" value="false"/>
     <property name="testOnReturn" value="false"/>
+    <property name="defaultAutoCommit" value="false"/>
     <property name="jdbcInterceptors"
-        value="org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport"/>
+        value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport"/>
   </bean>
 
   <bean id="batchDataSource" parent="abstractDataSource">
