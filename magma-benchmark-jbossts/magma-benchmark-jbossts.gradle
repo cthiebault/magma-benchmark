@@ -3,4 +3,5 @@ description = 'Magma Benchmark JBoss TS'
 dependencies {
   compile project(':magma-benchmark-commons')
   compile('org.jboss.narayana.jta:narayana-jta:5.0.0.CR1')
+  compile('org.jboss:jboss-transaction-spi:7.1.0.Final')
 }
