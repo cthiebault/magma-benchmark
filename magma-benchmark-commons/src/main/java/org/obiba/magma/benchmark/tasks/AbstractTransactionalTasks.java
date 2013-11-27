@@ -101,7 +101,7 @@ public abstract class AbstractTransactionalTasks {
   }
 
   public void deleteDatasource(Datasource datasource) throws Exception {
-    if(datasource.canDrop()) datasource.drop();
-    MagmaEngine.get().removeDatasource(datasource);
+//    if(datasource.canDrop()) datasource.drop();
+//    MagmaEngine.get().removeDatasource(datasource);
   }
 }

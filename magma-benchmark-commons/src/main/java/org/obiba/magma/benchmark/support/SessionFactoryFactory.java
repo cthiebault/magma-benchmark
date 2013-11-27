@@ -33,12 +33,12 @@ import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hibernate.cfg.AvailableSettings.*;
 
 @Component
-@Transactional
 public class SessionFactoryFactory {
 
   @Autowired
@@ -55,6 +55,7 @@ public class SessionFactoryFactory {
     dialectFactory.setDialectResolver(new StandardDialectResolver());
   }
 
+  @Transactional(propagation = Propagation.NOT_SUPPORTED)
   public SessionFactory getSessionFactory(DataSource dataSource) {
 
     Set<Class<?>> annotatedTypes = HibernateConfigurationHelper.getAnnotatedTypes();

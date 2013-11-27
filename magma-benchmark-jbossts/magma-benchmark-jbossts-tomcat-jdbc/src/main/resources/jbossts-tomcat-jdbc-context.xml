@@ -7,6 +7,7 @@
   <import resource="jbossts-tomcat-jdbc-mysql-context.xml"/>
 
   <bean id="abstractDataSource" class="org.apache.tomcat.jdbc.pool.DataSource" abstract="true" destroy-method="close">
+    <property name="driverClassName" value="com.arjuna.ats.jdbc.TransactionalDriver"/>
     <property name="maxIdle" value="10"/>
     <property name="testOnBorrow" value="true"/>
     <property name="testWhileIdle" value="false"/>
@@ -14,10 +15,11 @@
     <property name="defaultAutoCommit" value="false"/>
     <property name="jdbcInterceptors"
         value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport"/>
+    <property name="connectionProperties" value="DYNAMIC_CLASS=com.example.CustomDatasourceLoader;"/>
   </bean>
 
   <bean id="batchDataSource" parent="abstractDataSource">
-    <property name="url" value="jdbc:hsqldb:file:build/batch.db;shutdown=true"/>
+    <property name="url" value="jdbc:arjuna:hsqldb:file:build/batch.db;shutdown=true"/>
     <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
     <property name="username" value="sa"/>
     <property name="password" value=""/>

@@ -18,9 +18,10 @@ public abstract class AbstractMagmaBenchmark {
     log.info("Start MagmaEngine");
     new MagmaEngine().extend(new MagmaXStreamExtension());
 
-    // JBossTS storage
+    // JBossTS config
     System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "build/jbossts");
     System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "build/jbossts");
+    System.setProperty("org.jboss.logging.provider", "slf4j");
   }
 
   protected abstract String getContextXml();

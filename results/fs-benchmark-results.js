@@ -1,4 +1,4 @@
 var data = [
   ,
-  {"importDuration": 53838, "importDurationFormatted": "53 seconds and 838 milliseconds", "vectorReadDuration": 53838, "vectorReadDurationFormatted": "53 seconds and 838 milliseconds", "deleteDuration": 0, "srcFsDatasource": "20-onyx-data.zip", "datasource": "hibernate", "flavor": "mysql"},
+  {"importDuration": 47966, "importDurationFormatted": "47 seconds and 966 milliseconds", "vectorReadDuration": 47966, "vectorReadDurationFormatted": "47 seconds and 966 milliseconds", "deleteDuration": 0, "srcFsDatasource": "5-onyx-data.zip", "datasource": "hibernate", "flavor": "mysql"},
 ];

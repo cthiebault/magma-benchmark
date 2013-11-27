@@ -37,9 +37,9 @@ public class HibernateTasks extends AbstractTransactionalTasks {
 
   @Override
   public void deleteDatasource(Datasource datasource) throws Exception {
-    super.deleteDatasource(datasource);
-    // delete all entities
-    ((HibernateDatasource) datasource).getSessionFactory().getCurrentSession()
-        .createQuery("delete from VariableEntityState").executeUpdate();
+//    super.deleteDatasource(datasource);
+//    // delete all entities
+//    ((HibernateDatasource) datasource).getSessionFactory().getCurrentSession()
+//        .createQuery("delete from VariableEntityState").executeUpdate();
   }
 }

@@ -6,7 +6,8 @@
   <util:properties id="mysql" location="jdbc-mysql.properties"/>
 
   <bean id="mysqlDataSource" parent="abstractDataSource">
-    <property name="driverClassName" value="#{mysql.driverClassName}"/>
+    <property name="driverClassName"
+        value="jdbc:arjuna:mysql://localhost:3306/magma_benchmark?characterEncoding=UTF-8"/>
     <property name="url" value="#{mysql.url}"/>
     <property name="username" value="#{mysql.username}"/>
     <property name="password" value="#{mysql.password}"/>
